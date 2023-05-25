@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
+using System.IO;
+using System.Windows.Forms;
+
 namespace DockFlow
 {
     public partial class Form1 : Form
@@ -5,6 +11,7 @@ namespace DockFlow
         public Form1()
         {
             InitializeComponent();
+            var culture = System.Globalization.CultureInfo.CurrentUICulture;
         }
 
         private void panel1_DragEnter(object sender, DragEventArgs e)
@@ -35,7 +42,27 @@ namespace DockFlow
             file.Filter = "Документ | *.doc*";
             if (file.ShowDialog() == DialogResult.OK)
             {
+                byte[] readText = File.ReadAllBytes(file.FileName);
+                sendToDB(file.SafeFileName, readText);
+            }
+        }
 
+        public void checkFile(string fileName)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                DocumentTemplate doc = new DocumentTemplate();
+                var obj = doc.Name.ToList();
+            }
+        }
+
+        public void sendToDB(string Name, byte[] File)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                DocumentTemplate doc = new DocumentTemplate { Name = $"{Name}", File = File };
+                db.DocumentTemplate.Add(doc);
+                db.SaveChanges();
             }
         }
     }
