@@ -1,9 +1,3 @@
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.IO;
-using System.Windows.Forms;
-
 namespace DockFlow
 {
     public partial class Form1 : Form
@@ -14,27 +8,27 @@ namespace DockFlow
             var culture = System.Globalization.CultureInfo.CurrentUICulture;
         }
 
-        private void panel1_DragEnter(object sender, DragEventArgs e)
+        public void sendToDBDocumentTemplate(string Name, byte[] File)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                label1.Text = "Отпустите мышь";
-                e.Effect = DragDropEffects.Copy;
-            }
+            var newTep = new DocumentTemplate();
+            var db = new ApplicationContext();
+            newTep.Name = $"{Name}";
+            newTep.File = File;
+            db.DocumentTemplate.Add(newTep);
+            db.SaveChanges();
         }
 
-        private void panel1_DragDrop(object sender, DragEventArgs e)
+        public void sendToDBDocument(string Name, int IdDocTemp)
         {
-            label1.Text = "Перетащите документ в данную область";
-            e.Data.GetData(DataFormats.FileDrop);
+            var newDoc = new Document();
+            var db = new ApplicationContext();
+            newDoc.Name = Name;
+            newDoc.DocumentTemplateId = IdDocTemp;
+            db.Document.Add(newDoc);
+            db.SaveChanges();
         }
 
-        private void panel1_DragLeave(object sender, EventArgs e)
-        {
-            label1.Text = "Перетащите документ в данную область";
-        }
-
-        private void panel1_Click(object sender, EventArgs e)
+        private void button5_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
             file.Title = "Выберите документ";
@@ -43,26 +37,40 @@ namespace DockFlow
             if (file.ShowDialog() == DialogResult.OK)
             {
                 byte[] readText = File.ReadAllBytes(file.FileName);
-                sendToDB(file.SafeFileName, readText);
+                sendToDBDocumentTemplate(file.SafeFileName, readText);
+                label3.Text = $"{file.FileName}";
             }
         }
 
-        public void checkFile(string fileName)
+        private void button6_Click(object sender, EventArgs e)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            var selectedIndex =  (Int32.Parse(comboBox2.GetItemText(comboBox2.SelectedIndex)) + 1);
+            sendToDBDocument(textBox1.Text, selectedIndex);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var db = new ApplicationContext();
+            var templates = db.DocumentTemplate.ToList();
+
+            foreach (var template in templates)
             {
-                DocumentTemplate doc = new DocumentTemplate();
-                var obj = doc.Name.ToList();
+                var item = new ComboboxItem();
+                item.Text = template.Name;
+                item.Value = template.Id;
+
+                comboBox2.Items.Add(item);
             }
         }
 
-        public void sendToDB(string Name, byte[] File)
+        public class ComboboxItem
         {
-            using (ApplicationContext db = new ApplicationContext())
+            public string Text { get; set; }
+            public object Value { get; set; }
+
+            public override string ToString()
             {
-                DocumentTemplate doc = new DocumentTemplate { Name = $"{Name}", File = File };
-                db.DocumentTemplate.Add(doc);
-                db.SaveChanges();
+                return Text;
             }
         }
     }

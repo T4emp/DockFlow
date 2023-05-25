@@ -6,7 +6,7 @@ namespace DockFlow
     {
         public DbSet<Document> Document => Set<Document>();
         public DbSet<DocumentTemplate> DocumentTemplate => Set<DocumentTemplate>();
-        public DbSet<Parametr> Parametr => Set<Parametr>();
+        public DbSet<Parameter> Parameter => Set<Parameter>();
         public ApplicationContext() => Database.EnsureCreated();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -18,8 +18,10 @@ namespace DockFlow
     public class Document
     {
         public int Id { get; set; }
-        public int TemplateId { get; set; }
         public string? Name { get; set; }
+        public int DocumentTemplateId { get; set; }
+        public DocumentTemplate? DocumentTemplate { get; set; }
+        public ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
     }
 
     public class DocumentTemplate
@@ -27,12 +29,15 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
+        public ICollection<Document> Documents { get; set; } = new List<Document>();
     }
 
-    public class Parametr
+    public class Parameter
     {
         public int Id { get; set; }
+        public int DocumentId { get; set; }
         public string? Name { get; set; }
         public string? Value { get; set; }
+        public Document? Document { get; set; }
     }
 }
