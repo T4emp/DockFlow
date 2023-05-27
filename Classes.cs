@@ -21,7 +21,7 @@ namespace DockFlow
         public string? Name { get; set; }
         public int DocumentTemplateId { get; set; }
         public DocumentTemplate? DocumentTemplate { get; set; }
-        public ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
+        ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
     }
 
     public class DocumentTemplate
@@ -29,7 +29,8 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
-        public ICollection<Document> Documents { get; set; } = new List<Document>();
+        public string? ParameterNames { get; set; }
+        ICollection<Document> Documents { get; set; } = new List<Document>();
     }
 
     public class Parameter
