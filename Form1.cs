@@ -24,9 +24,9 @@ namespace DockFlow
         private void button5_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
-            file.Title = "Выберите документ";
+            file.Title = "Choose doc";
             file.InitialDirectory = @"%HOMEPATH%";
-            file.Filter = "Документ | *.doc*";
+            file.Filter = "DOC | *.doc*";
             byte[] readText = null;
             if (file.ShowDialog() == DialogResult.OK)
             {
