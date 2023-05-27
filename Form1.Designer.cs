@@ -30,14 +30,14 @@
         {
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -68,6 +68,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(786, 416);
             this.panel1.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(86, 125);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(216, 23);
+            this.comboBox1.TabIndex = 8;
+            this.comboBox1.DropDown += new System.EventHandler(this.comboBox1_DropDown);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(16, 128);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(33, 15);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "docx";
             // 
             // label3
             // 
@@ -102,6 +120,7 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Send";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // button1
             // 
@@ -111,7 +130,7 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "File";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button5_Click);
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tabControl1
             // 
@@ -123,23 +142,6 @@
             this.tabControl1.Size = new System.Drawing.Size(800, 450);
             this.tabControl1.TabIndex = 0;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 128);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(33, 15);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "docx";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(86, 125);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(216, 23);
-            this.comboBox1.TabIndex = 8;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -148,7 +150,6 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.tabPage1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

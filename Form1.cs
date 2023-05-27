@@ -21,7 +21,18 @@ namespace DockFlow
             db.SaveChanges();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        public class ComboboxItem
+        {
+            public string? Text { get; set; }
+            public object? Value { get; set; }
+
+            public override string ToString()
+            {
+                return Text;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
             file.Title = "Choose doc";
@@ -55,14 +66,15 @@ namespace DockFlow
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
             var selectedIndex = (Int32.Parse(comboBox1.GetItemText(comboBox1.SelectedIndex)) + 1);
             sendToDBDocument(textBox1.Text, selectedIndex);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void comboBox1_DropDown(object sender, EventArgs e)
         {
+            comboBox1.Items.Clear();
             var db = new ApplicationContext();
             var templates = db.DocumentTemplate.ToList();
 
@@ -73,17 +85,6 @@ namespace DockFlow
                 item.Value = template.Id;
 
                 comboBox1.Items.Add(item);
-            }
-        }
-
-        public class ComboboxItem
-        {
-            public string? Text { get; set; }
-            public object? Value { get; set; }
-
-            public override string ToString()
-            {
-                return Text;
             }
         }
     }
