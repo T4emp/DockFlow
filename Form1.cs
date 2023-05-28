@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.Data;
 
 namespace DockFlow
 {
@@ -86,6 +87,50 @@ namespace DockFlow
 
                 comboBox1.Items.Add(item);
             }
+        }
+
+        private void comboBox2_DropDown(object sender, EventArgs e)
+        {
+            comboBox2.Items.Clear();
+            var db = new ApplicationContext();
+            var templates = db.DocumentTemplate.ToList();
+
+            foreach (var template in templates)
+            {
+                var item = new ComboboxItem();
+                item.Text = template.Name;
+                item.Value = template.Id;
+
+                comboBox2.Items.Add(item);
+            }
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selectedIndex = (Int32.Parse(comboBox2.GetItemText(comboBox2.SelectedIndex)) + 1);
+
+            var db = new ApplicationContext();
+            var templates = db.DocumentTemplate.ToList().Where(x => x.Id == selectedIndex);
+
+            DataTable dataTable = new DataTable();
+
+            dataTable.Columns.Add("ValueDOC", typeof(string));
+            dataTable.Columns.Add("Value", typeof(string));
+
+            foreach (var template in templates)
+            {
+                string[] obj =  template.ParameterNames.Split(",");
+                foreach (var item in obj)
+                {
+                    dataTable.Rows.Add(item);
+                }
+            }
+            dataGridView1.DataSource = dataTable;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }
