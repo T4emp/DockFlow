@@ -1,6 +1,14 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Data;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.IO.Pipes;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.ExtendedProperties;
 
 namespace DockFlow
 {
@@ -55,7 +63,7 @@ namespace DockFlow
                 Body body = wordDoc.MainDocumentPart.Document.Body;
                 var text = body.InnerText;
                 var textSpace1 = text.Replace("<", " <");
-                var textSpace2 = text.Replace(">", "> ");
+                var textSpace2 = textSpace1.Replace(">", "> ");
                 var parameterList = textSpace2.Split(" ").Where(x => x.StartsWith("<") && x.EndsWith(">"));
 
                 newTep.Name = file.SafeFileName;
@@ -119,7 +127,7 @@ namespace DockFlow
 
             foreach (var template in templates)
             {
-                string[] obj =  template.ParameterNames.Split(",");
+                string[] obj = template.ParameterNames.Split(",");
                 foreach (var item in obj)
                 {
                     dataTable.Rows.Add(item);
@@ -130,7 +138,34 @@ namespace DockFlow
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var db = new ApplicationContext();
+            var newTep = new DocumentTemplate();
+            var parameter = new Parameter();
+            var idtemplates = db.DocumentTemplate.First(x => x.Id == (comboBox2.SelectedIndex + 1));
+
+            using (FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
+            {
+                fileStream.Write(idtemplates.File);
+                fileStream.Close();
+
+                using (WordprocessingDocument wordDoc = WordprocessingDocument.CreateFromTemplate(fileStream.Name))
+                {
+                    var body = wordDoc.MainDocumentPart.Document.Body;
+                    var paragraphs = body.Elements<Paragraph>();
+
+                    var texts = paragraphs.SelectMany(p => p.Elements<Run>()).SelectMany(r => r.Elements<Text>());
+
+                    foreach (Text text in texts)
+                    {
+
+                    }
+                }
+            }
         }
     }
 }
