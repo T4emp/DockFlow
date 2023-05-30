@@ -62,9 +62,9 @@ namespace DockFlow
             {
                 Body body = wordDoc.MainDocumentPart.Document.Body;
                 var text = body.InnerText;
-                var textSpace1 = text.Replace("<", " <");
-                var textSpace2 = textSpace1.Replace(">", "> ");
-                var parameterList = textSpace2.Split(" ").Where(x => x.StartsWith("<") && x.EndsWith(">"));
+                var textSpace1 = text.Replace("[", " [");
+                var textSpace2 = textSpace1.Replace("]", "] ");
+                var parameterList = textSpace2.Split(" ").Where(x => x.StartsWith("[") && x.EndsWith("]"));
 
                 newTep.Name = file.SafeFileName;
                 newTep.File = readText;
