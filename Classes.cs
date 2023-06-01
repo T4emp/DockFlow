@@ -29,7 +29,7 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
-        public string? ParameterNames { get; set; }
+        public string ParameterNames { get; set; }
         ICollection<Document> Documents { get; set; } = new List<Document>();
     }
 

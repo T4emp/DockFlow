@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.IO.Pipes;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.ExtendedProperties;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DockFlow
 {
@@ -113,6 +115,9 @@ namespace DockFlow
             }
         }
 
+        const string ParameterName = "ParameterName";
+        const string ParameterValue = "ParameterValue";
+
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedIndex = (Int32.Parse(comboBox2.GetItemText(comboBox2.SelectedIndex)) + 1);
@@ -122,8 +127,8 @@ namespace DockFlow
 
             DataTable dataTable = new DataTable();
 
-            dataTable.Columns.Add("ValueDOC", typeof(string));
-            dataTable.Columns.Add("Value", typeof(string));
+            dataTable.Columns.Add(ParameterName, typeof(string));
+            dataTable.Columns.Add(ParameterValue, typeof(string));
 
             foreach (var template in templates)
             {
@@ -141,28 +146,67 @@ namespace DockFlow
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        [Obsolete]
+        private void CreateDocument(object sender, EventArgs e)
         {
             var db = new ApplicationContext();
-            var newTep = new DocumentTemplate();
-            var parameter = new Parameter();
-            var idtemplates = db.DocumentTemplate.First(x => x.Id == (comboBox2.SelectedIndex + 1));
+            var template = db.DocumentTemplate.First(x => x.Id == (comboBox2.SelectedIndex + 1));
 
-            using (FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
+            var parameterValueList = new Dictionary<string, string>();
+            var templateParameterList = template.ParameterNames.Split(",");
+
+            for (var i = 0; i < templateParameterList.Length; i++)
             {
-                fileStream.Write(idtemplates.File);
+                parameterValueList.Add(templateParameterList[i], dataGridView1.Rows[i].Cells[1].Value!.ToString());
+            }
+
+            var document = new Document
+            {
+                DocumentTemplateId = template.Id,
+                Name = "new body", //todo
+            };
+
+            db.Document.Add(document);
+            db.SaveChanges();
+
+            foreach (var parameter in parameterValueList)
+            {
+                db.Parameter.Add(new Parameter
+                {
+                    DocumentId = document.Id,
+                    Name = parameter.Key,
+                    Value = parameter.Value,
+                });
+            }
+
+            db.SaveChanges();
+
+            using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
+            {
+                fileStream.Write(template.File);
                 fileStream.Close();
 
-                using (WordprocessingDocument wordDoc = WordprocessingDocument.CreateFromTemplate(fileStream.Name))
+                using (var doc = WordprocessingDocument.CreateFromTemplate(fileStream.Name))
                 {
-                    var body = wordDoc.MainDocumentPart.Document.Body;
-                    var paragraphs = body.Elements<Paragraph>();
+                    var body = doc.MainDocumentPart!.Document.Body;
 
-                    var texts = paragraphs.SelectMany(p => p.Elements<Run>()).SelectMany(r => r.Elements<Text>());
-
-                    foreach (Text text in texts)
+                    foreach (var text in body.Descendants<Text>())
                     {
+                        foreach (var param in parameterValueList)
+                        {
+                            text.Text = text.Text.Replace(param.Key, param.Value);
+                        }
+                    }
 
+                    using (var saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.FileName = document.Name;
+                        saveFileDialog.DefaultExt = "docx";
+
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            doc.Clone(saveFileDialog.FileName);
+                        }
                     }
                 }
             }
