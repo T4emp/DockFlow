@@ -58,7 +58,6 @@
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -126,7 +125,7 @@
             // pictureBox3
             // 
             this.pictureBox3.Image = global::DockFlow.Properties.Resources.Pictogrammers_Material_Light_File_plus_512;
-            this.pictureBox3.Location = new System.Drawing.Point(49, 39);
+            this.pictureBox3.Location = new System.Drawing.Point(49, 30);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(50, 50);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -165,7 +164,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::DockFlow.Properties.Resources.Pictogrammers_Material_Light_File_512;
-            this.pictureBox1.Location = new System.Drawing.Point(49, 39);
+            this.pictureBox1.Location = new System.Drawing.Point(49, 30);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(50, 50);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -204,7 +203,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = global::DockFlow.Properties.Resources.Pictogrammers_Material_Light_File_multiple_512;
-            this.pictureBox2.Location = new System.Drawing.Point(49, 39);
+            this.pictureBox2.Location = new System.Drawing.Point(49, 30);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(50, 50);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -244,9 +243,9 @@
             this.panel5.Controls.Add(this.label5);
             this.panel5.Controls.Add(this.comboBox1);
             this.panel5.Controls.Add(this.panel6);
-            this.panel5.Location = new System.Drawing.Point(3, 0);
+            this.panel5.Location = new System.Drawing.Point(3, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(287, 193);
+            this.panel5.Size = new System.Drawing.Size(222, 148);
             this.panel5.TabIndex = 1;
             // 
             // button1
@@ -264,7 +263,7 @@
             this.label6.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label6.Location = new System.Drawing.Point(27, 157);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(196, 36);
+            this.label6.Size = new System.Drawing.Size(250, 36);
             this.label6.TabIndex = 7;
             this.label6.Text = "label6";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -284,7 +283,7 @@
             this.label5.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label5.Location = new System.Drawing.Point(27, 56);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(196, 36);
+            this.label5.Size = new System.Drawing.Size(250, 36);
             this.label5.TabIndex = 5;
             this.label5.Text = "label5";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -337,12 +336,12 @@
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Controls.Add(this.dataGridView1, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.menuStrip1, 0, 1);
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(296, 3);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(231, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 93F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(623, 411);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(222, 154);
             this.tableLayoutPanel3.TabIndex = 0;
             // 
             // dataGridView1
@@ -352,19 +351,19 @@
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(617, 376);
+            this.dataGridView1.Size = new System.Drawing.Size(216, 137);
             this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             // 
             // menuStrip1
             // 
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox1,
-            this.toolStripMenuItem1,
-            this.toolStripMenuItem2});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 382);
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 143);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(623, 29);
+            this.menuStrip1.Size = new System.Drawing.Size(222, 11);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -372,7 +371,7 @@
             // 
             this.toolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.toolStripComboBox1.Name = "toolStripComboBox1";
-            this.toolStripComboBox1.Size = new System.Drawing.Size(250, 25);
+            this.toolStripComboBox1.Size = new System.Drawing.Size(250, 7);
             this.toolStripComboBox1.DropDown += new System.EventHandler(this.toolStripComboBox1_DropDown);
             this.toolStripComboBox1.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBox1_SelectedIndexChanged);
             // 
@@ -383,7 +382,7 @@
             this.editToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(125, 25);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(125, 7);
             this.toolStripMenuItem1.Text = "toolStripMenuItem1";
             // 
             // addToolStripMenuItem
@@ -406,13 +405,6 @@
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(125, 25);
-            this.toolStripMenuItem2.Text = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
             // Form1
             // 
@@ -477,7 +469,6 @@
         private ComboBox comboBox2;
         private Label label5;
         private ComboBox comboBox1;
-        private ToolStripMenuItem toolStripMenuItem2;
         private Button button1;
     }
 }

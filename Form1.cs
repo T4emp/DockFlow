@@ -24,7 +24,6 @@ namespace DockFlow
             button1.Text = Localization.Translate("Delete");
 
             toolStripMenuItem1.Text = Localization.Translate("Tools");
-            toolStripMenuItem2.Text = Localization.Translate("Save");
 
             addToolStripMenuItem.Text = Localization.Translate("Add");
             editToolStripMenuItem.Text = Localization.Translate("Edit");
@@ -61,19 +60,28 @@ namespace DockFlow
             var db = new ApplicationContext();
             var sample = new DocumentSample();
 
-            using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
-            {
-                fileStream.Write(file);
-                {
-                    sample.Name = name;
-                    sample.File = file;
+            var sampleDOC = db.DocumentSample.ToList().Where(x => x.Name == name);
 
-                    db.DocumentSample.Add(sample);
-                    db.SaveChanges();
-                    MessageBox.Show($"'{name}', {Localization.Translate("file added successfully")}");
+            if (sampleDOC != null && sampleDOC.Any())
+            {
+                MessageBox.Show($"{Localization.Translate("DOCExists")}");
+            }
+            else
+            {
+                using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
+                {
+                    fileStream.Write(file);
+                    {
+                        sample.Name = name;
+                        sample.File = file;
+
+                        db.DocumentSample.Add(sample);
+                        db.SaveChanges();
+                        MessageBox.Show($"'{name}', {Localization.Translate("file added successfully")}");
+                    }
+                    fileStream.Close();
+                    File.Delete(fileStream.Name);
                 }
-                fileStream.Close();
-                File.Delete(fileStream.Name);
             }
         }
 
@@ -94,15 +102,29 @@ namespace DockFlow
             var nameTable = new NameTable();
 
             var text1 = Localization.Translate("Title for the table");
-            var text2 = Localization.Translate("Add to table");
+            var text2 = Localization.Translate("Add");
 
-            nameTable.Name = Interaction.InputBox($"{text1}", $"{text2}", "");
-
-            if (nameTable.Name != "")
+            do
             {
-                db.NameTable.Add(nameTable);
-                db.SaveChanges();
+                nameTable.Name = Interaction.InputBox($"{text1}", $"{text2}", "");
+
+                var nameTableName = db.NameTable.ToList().Where(x => x.Name == nameTable.Name);
+
+                if (nameTable.Name != "")
+                {
+                    if (nameTableName != null && nameTableName.Any())
+                    {
+                        MessageBox.Show($"{Localization.Translate("TableExists")}");
+                    }
+                    else
+                    {
+                        db.NameTable.Add(nameTable);
+                        db.SaveChanges();
+                        nameTable.Name = "";
+                    }
+                }
             }
+            while (nameTable.Name != "");
         }
 
         //Label2 choose table from DB "NameTable"
@@ -134,7 +156,7 @@ namespace DockFlow
                 string currentValue = listLine.FirstOrDefault().Name;
 
                 var text1 = Localization.Translate("Title for the table");
-                var text2 = Localization.Translate("Add to table");
+                var text2 = Localization.Translate("Add");
 
                 string newName = Interaction.InputBox($"{text1}", $"{text2}", $"{currentValue}");
                 if (newName != "")
@@ -145,11 +167,15 @@ namespace DockFlow
                         db.Update(item);
                     }
                     db.SaveChanges();
+
+                    toolStripComboBox1.Text = default;
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Refresh();
                 }
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("No table selected")}");
+                MessageBox.Show($"{Localization.Translate("NoSelect")}");
             }
         }
 
@@ -171,63 +197,40 @@ namespace DockFlow
                 {
                     db.NameTable.RemoveRange(listLine);
                     db.SaveChanges();
+
+                    toolStripComboBox1.Text = default;
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Refresh();
                 }
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("No table selected")}");
+                MessageBox.Show($"{Localization.Translate("NoSelect")}");
             }
         }
 
         //dataGrid from NameTable from Id
         private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var db = new ApplicationContext();
-
-            var nameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-            var parameters = db.Parameter.ToList().Where(x => x.NameTableId == nameTable.FirstOrDefault().Id);
-
-            DataTable dataTable = new DataTable();
-
-            dataTable.Columns.Add("Parameter Name");
-            dataTable.Columns.Add("Parameter Value");
-
-            DataRow dataRow = dataTable.NewRow();
-
-            foreach (var parameter in parameters)
-            {
-                dataTable.Rows.Add(parameter.Name, parameter.Value);
-            }
-            dataGridView1.DataSource = dataTable;
-        }
-
-        private void toolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            var db = new ApplicationContext();
-            var parameter = new Parameter();
-
             if (toolStripComboBox1.Text != "")
             {
-                var currentNameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-                int nameTableId = currentNameTable.FirstOrDefault().Id;
+                var db = new ApplicationContext();
 
-                var currentParameterId = db.Parameter.ToList().Where(x => x.NameTableId == nameTableId);
+                var nameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
+                var parameters = db.Parameter.ToList().Where(x => x.NameTableId == nameTable.FirstOrDefault().Id);
 
-                db.Parameter.RemoveRange(currentParameterId);
+                DataTable dataTable = new DataTable();
 
-                for (var j = 0; j < dataGridView1.RowCount - 1; j++)
+                dataTable.Columns.Add("Parameter Name");
+                dataTable.Columns.Add("Parameter Value");
+
+                DataRow dataRow = dataTable.NewRow();
+
+                foreach (var parameter in parameters)
                 {
-                    var cells1 = dataGridView1.Rows[j].Cells[0].Value.ToString();
-                    var cells2 = dataGridView1.Rows[j].Cells[1].Value.ToString();
-
-                    parameter.Id = Guid.NewGuid().ToString();
-                    parameter.NameTableId = nameTableId;
-                    parameter.Name = cells1;
-                    parameter.Value = cells2;
-
-                    db.AddRange(parameter);
-                    db.SaveChanges();
+                    dataTable.Rows.Add(parameter.Name, parameter.Value);
                 }
+                dataGridView1.DataSource = dataTable;
             }
         }
 
@@ -240,41 +243,42 @@ namespace DockFlow
 
             var parameters = db.Parameter.ToList().Where(x => x.NameTableId == idParameter);
 
-            using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
+            using FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite);
+
+            fileStream.Write(DOC);
+            fileStream.Close();
+
+            using Stream streamFile = File.Open(fileStream.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using WordprocessingDocument doc = WordprocessingDocument.Open(streamFile, false);
+            WordprocessingDocument reportDOC = (WordprocessingDocument)doc.Clone();
+            reportDOC.ChangeDocumentType(WordprocessingDocumentType.Document);
+
+            var body = reportDOC.MainDocumentPart!.Document.Body;
+
+            foreach (var text in body.Descendants<Text>())
             {
-                fileStream.Write(DOC);
-                fileStream.Close();
-
-                using Stream streamFile = File.Open(fileStream.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using WordprocessingDocument doc = WordprocessingDocument.Open(streamFile, false);
-                WordprocessingDocument reportDOC = (WordprocessingDocument)doc.Clone();
-                reportDOC.ChangeDocumentType(WordprocessingDocumentType.Document);
-
-                var body = reportDOC.MainDocumentPart!.Document.Body;
-
-                foreach (var text in body.Descendants<Text>())
+                foreach (var parameter in parameters)
                 {
-                    foreach (var parameter in parameters)
-                    {
-                        text.Text = text.Text.Replace(parameter.Name, parameter.Value);
-                    }
+                    text.Text = text.Text.Replace(parameter.Name, parameter.Value);
                 }
-
-                using (var saveFileDialog = new SaveFileDialog())
-                {
-                    saveFileDialog.FileName = Guid.NewGuid().ToString();
-                    saveFileDialog.DefaultExt = "docx";
-
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        WordprocessingDocument outputDOC = (WordprocessingDocument)reportDOC.SaveAs(saveFileDialog.FileName);
-                        outputDOC.Close();
-                    }
-                }
-
-                reportDOC.Close();
-                File.Delete(fileStream.Name);
             }
+
+            using (var saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.FileName = Guid.NewGuid().ToString();
+                saveFileDialog.DefaultExt = "docx";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    WordprocessingDocument outputDOC = (WordprocessingDocument)reportDOC.SaveAs(saveFileDialog.FileName);
+                    outputDOC.Close();
+                }
+            }
+
+            reportDOC.Close();
+            streamFile.Close();
+
+            File.Delete(fileStream.Name);
         }
 
         private void panel6_Click(object sender, EventArgs e)
@@ -313,11 +317,12 @@ namespace DockFlow
                 {
                     db.DocumentSample.RemoveRange(documentSample);
                     db.SaveChanges();
+                    comboBox1.Text = default;
                 }
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("No table selected")}");
+                MessageBox.Show($"{Localization.Translate("NoSelect")}");
             }
         }
 
@@ -350,6 +355,36 @@ namespace DockFlow
                 item.Text = selectedName.Name;
 
                 comboBox2.Items.Add(item);
+            }
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            var db = new ApplicationContext();
+            var parameter = new Parameter();
+
+            if (toolStripComboBox1.Text != "")
+            {
+                var currentNameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
+                int nameTableId = currentNameTable.FirstOrDefault().Id;
+
+                var currentParameterId = db.Parameter.ToList().Where(x => x.NameTableId == nameTableId);
+
+                db.Parameter.RemoveRange(currentParameterId);
+
+                for (var j = 0; j < dataGridView1.RowCount - 1; j++)
+                {
+                    var cells1 = dataGridView1.Rows[j].Cells[0].Value.ToString();
+                    var cells2 = dataGridView1.Rows[j].Cells[1].Value.ToString();
+
+                    parameter.Id = Guid.NewGuid().ToString();
+                    parameter.NameTableId = nameTableId;
+                    parameter.Name = cells1;
+                    parameter.Value = cells2;
+
+                    db.AddRange(parameter);
+                    db.SaveChanges();
+                }
             }
         }
 
