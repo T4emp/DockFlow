@@ -4,8 +4,8 @@ namespace DockFlow
 {
     public class ApplicationContext : DbContext
     {
-        public DbSet<Document> Document => Set<Document>();
-        public DbSet<DocumentTemplate> DocumentTemplate => Set<DocumentTemplate>();
+        public DbSet<DocumentSample> DocumentSample => Set<DocumentSample>();
+        public DbSet<NameTable> NameTable => Set<NameTable>();
         public DbSet<Parameter> Parameter => Set<Parameter>();
         public ApplicationContext() => Database.EnsureCreated();
 
@@ -15,30 +15,26 @@ namespace DockFlow
         }
     }
 
-    public class Document
-    {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public int DocumentTemplateId { get; set; }
-        public DocumentTemplate? DocumentTemplate { get; set; }
-        ICollection<Parameter> Parameters { get; set; } = new List<Parameter>();
-    }
-
-    public class DocumentTemplate
+    public class DocumentSample
     {
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
-        public string ParameterNames { get; set; }
-        ICollection<Document> Documents { get; set; } = new List<Document>();
+    }
+
+    public class NameTable
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        ICollection<Parameter> Parameter { get; set; } = new List<Parameter>();
     }
 
     public class Parameter
     {
-        public int Id { get; set; }
-        public int DocumentId { get; set; }
+        public string Id { get; set; }
+        public int NameTableId { get; set; }
         public string? Name { get; set; }
         public string? Value { get; set; }
-        public Document? Document { get; set; }
+        //public NameTable? NameTable { get; set; }
     }
 }
