@@ -245,7 +245,7 @@
             this.panel5.Controls.Add(this.panel6);
             this.panel5.Location = new System.Drawing.Point(3, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(222, 148);
+            this.panel5.Size = new System.Drawing.Size(222, 154);
             this.panel5.TabIndex = 1;
             // 
             // button1
@@ -304,14 +304,14 @@
             this.panel6.Controls.Add(this.label4);
             this.panel6.Location = new System.Drawing.Point(86, 291);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(125, 123);
+            this.panel6.Size = new System.Drawing.Size(135, 138);
             this.panel6.TabIndex = 2;
             this.panel6.Click += new System.EventHandler(this.panel6_Click);
             // 
             // pictureBox4
             // 
             this.pictureBox4.Image = global::DockFlow.Properties.Resources.Pictogrammers_Material_Light_Content_save_512;
-            this.pictureBox4.Location = new System.Drawing.Point(37, 23);
+            this.pictureBox4.Location = new System.Drawing.Point(42, 23);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(50, 50);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -324,7 +324,7 @@
             this.label4.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label4.Location = new System.Drawing.Point(0, 83);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 28);
+            this.label4.Size = new System.Drawing.Size(135, 36);
             this.label4.TabIndex = 0;
             this.label4.Text = "label4";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

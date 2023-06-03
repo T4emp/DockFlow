@@ -35,6 +35,6 @@ namespace DockFlow
         public int NameTableId { get; set; }
         public string? Name { get; set; }
         public string? Value { get; set; }
-        //public NameTable? NameTable { get; set; }
+        public NameTable? NameTable { get; set; }
     }
 }
