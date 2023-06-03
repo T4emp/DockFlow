@@ -231,6 +231,8 @@ namespace DockFlow
                     dataTable.Rows.Add(parameter.Name, parameter.Value);
                 }
                 dataGridView1.DataSource = dataTable;
+                dataGridView1.Columns[0].Width = 270;
+                dataGridView1.Columns[1].Width = 270;
             }
         }
 
@@ -358,7 +360,7 @@ namespace DockFlow
             }
         }
 
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        public void changeDataGrid()
         {
             var db = new ApplicationContext();
             var parameter = new Parameter();
@@ -386,6 +388,16 @@ namespace DockFlow
                     db.SaveChanges();
                 }
             }
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            changeDataGrid();
+        }
+
+        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            changeDataGrid();
         }
 
         private void panel1_MouseEnter(object sender, EventArgs e)
