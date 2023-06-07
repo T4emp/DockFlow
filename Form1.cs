@@ -1,8 +1,10 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.VisualBasic;
 using System.Data;
-using Color = System.Drawing.Color;
+using System.Windows.Forms;
+using System.Xml.Linq;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
 namespace DockFlow
@@ -12,50 +14,86 @@ namespace DockFlow
         public Form1()
         {
             InitializeComponent();
-
-            label1.Text = Localization.Translate("Home");
-            label2.Text = Localization.Translate("Data");
-            label3.Text = Localization.Translate("Upload");
-
-            label4.Text = Localization.Translate("Save");
-            label5.Text = Localization.Translate("Choose DOC:");
-            label6.Text = Localization.Translate("Choose table:");
-
-            button1.Text = Localization.Translate("Delete");
-
-            toolStripMenuItem1.Text = Localization.Translate("Tools");
-
-            addToolStripMenuItem.Text = Localization.Translate("Add");
-            editToolStripMenuItem.Text = Localization.Translate("Edit");
-            deleteToolStripMenuItem.Text = Localization.Translate("Delete");
-
-            panel5.Dock = DockStyle.Fill;
-            panel5.Visible = false;
-
-            tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Visible = false;
-
             var db = new ApplicationContext();
         }
 
-        //Label Add file to DB
-        private void panel3_Click(object sender, EventArgs e)
+        private void comboBox1_DropDown(object sender, EventArgs e)
         {
-            OpenFileDialog file = new OpenFileDialog();
-            file.Title = Localization.Translate("Choose DOC:");
-            file.InitialDirectory = @"%HOMEPATH%";
-            file.Filter = "DOC | *.doc*";
-            byte[]? readText;
+            comboBox1.Items.Clear();
 
-            if (file.ShowDialog() == DialogResult.OK)
+            var db = new ApplicationContext();
+            var documentSample = db.DocumentSample.ToList();
+
+            foreach (var selectedSample in documentSample)
             {
-                readText = File.ReadAllBytes(file.FileName);
-                AddDOC(file.SafeFileName, readText);
+                var item = new ComboboxItem();
+                item.Text = selectedSample.Name;
+
+                comboBox1.Items.Add(item);
             }
         }
 
-        //Add DOCX
-        public void AddDOC(string name, byte[] file)
+        private void button1_Click(object sender, EventArgs e)
+        {
+            contextMenuDOC.Items.Clear();
+
+            if (comboBox1.Text != "")
+            {
+                contextMenuDOC.Items.Add("Добавить");
+                contextMenuDOC.Items.Add("Экспортировать");
+                contextMenuDOC.Items.Add("Удалить");
+            }
+            else contextMenuDOC.Items.Add("Добавить");
+
+            contextMenuDOC.Show(button1, new Point(0, button1.Height));
+        }
+
+        private void contextMenuDOC_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem.Text == "Добавить")
+            {
+                contextMenuDOC.Hide();
+                FileDialog();
+            }
+
+            if (e.ClickedItem.Text == "Экспортировать")
+            {
+                contextMenuDOC.Hide();
+                exportDOC();
+            }
+
+            if (e.ClickedItem.Text == "Удалить")
+            {
+                contextMenuDOC.Hide();
+                DeleteDOC();
+            }
+        }
+
+        private void FileDialog()
+        {
+            using (var file = new OpenFileDialog())
+            {
+                file.Title = "Выберите документ:";
+                file.InitialDirectory = @"%HOMEPATH%";
+                file.Filter = "Документ | *.doc*";
+                byte[]? readText;
+
+                if (file.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        readText = File.ReadAllBytes(file.FileName);
+                        AddDOC(file.SafeFileName, readText);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Файл открыт в другой программе");
+                    }
+                }
+            }
+        }
+
+        private void AddDOC(string name, byte[] file)
         {
             var db = new ApplicationContext();
             var sample = new DocumentSample();
@@ -64,45 +102,150 @@ namespace DockFlow
 
             if (sampleDOC != null && sampleDOC.Any())
             {
-                MessageBox.Show($"{Localization.Translate("DOCExists")}");
+                MessageBox.Show("Документ уже существует");
             }
             else
             {
                 using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
                 {
                     fileStream.Write(file);
+                    using (WordprocessingDocument doc = WordprocessingDocument.Open(fileStream, false))
                     {
-                        sample.Name = name;
-                        sample.File = file;
+                        Body body = doc.MainDocumentPart.Document.Body;
+                        var text = body.InnerText;
+                        var textSpace = text.Replace("<", " <").Replace(">", "> ");
+                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith("<") && x.EndsWith(">"));
+                        if (parameterList != null && parameterList.Any())
+                        {
+                            sample.Name = name;
+                            sample.File = file;
+                            sample.ValueParseDoc = string.Join(",", parameterList);
 
-                        db.DocumentSample.Add(sample);
-                        db.SaveChanges();
-                        MessageBox.Show($"'{name}', {Localization.Translate("file added successfully")}");
+                            db.DocumentSample.Add(sample);
+                            db.SaveChanges();
+                            MessageBox.Show($"Файл '{name}' добавлен");
+                        }
+                        else MessageBox.Show($"Файл '{name}' не имеет параметров");
                     }
-                    fileStream.Close();
+                    fileStream.Dispose();
                     File.Delete(fileStream.Name);
                 }
             }
         }
 
-        public class ComboboxItem
+        private void exportDOC()
         {
-            public string? Text { get; set; }
+            var db = new ApplicationContext();
+            var currentFile = db.DocumentSample.First(x => x.Name == comboBox1.Text);
 
-            public override string ToString()
+            using (var file = new SaveFileDialog())
             {
-                return Text;
+                file.Title = "Сохранить документ:";
+                file.InitialDirectory = @"%HOMEPATH%";
+                file.Filter = "Документ | *.doc*";
+                file.AddExtension = true;
+                file.FileName = currentFile.Name;
+
+                if (file.ShowDialog() == DialogResult.OK)
+                {
+                    File.WriteAllBytes(file.FileName, currentFile.File);
+                }
             }
         }
 
-        //Label2 Add NameTable
-        private void addToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DeleteDOC()
+        {
+            var db = new ApplicationContext();
+
+            if (comboBox1.Text != "")
+            {
+                var documentSample = db.DocumentSample.ToList().Where(x => x.Name == comboBox1.Text);
+
+                DialogResult result = MessageBox.Show(
+                    "Вы действительно хотите удалить?",
+                    "Удалить",
+                    MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    db.DocumentSample.RemoveRange(documentSample);
+                    db.SaveChanges();
+                    comboBox1.Text = default;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Документ не выбран");
+            }
+        }
+
+        private void comboBox2_DropDown(object sender, EventArgs e)
+        {
+            comboBox2.Items.Clear();
+
+            var db = new ApplicationContext();
+            var nameTable = db.NameTable.ToList();
+
+            foreach (var selectedName in nameTable)
+            {
+                var item = new ComboboxItem();
+                item.Text = selectedName.Name;
+
+                comboBox2.Items.Add(item);
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            contextMenuTable.Items.Clear();
+
+            if (comboBox2.Text != "")
+            {
+                contextMenuTable.Items.Add("Добавить");
+                contextMenuTable.Items.Add("Изменить имя");
+                contextMenuTable.Items.Add("Изменить данные");
+                contextMenuTable.Items.Add("Удалить");
+            }
+            else
+            {
+                contextMenuTable.Items.Add("Добавить");
+            }
+
+            contextMenuTable.Show(button2, new Point(0, button2.Height));
+        }
+
+        private void contextMenuTable_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem.Text == "Добавить")
+            {
+                contextMenuTable.Hide();
+                AddTable();
+            }
+
+            if (e.ClickedItem.Text == "Изменить имя")
+            {
+                contextMenuTable.Hide();
+                EditTableName();
+            }
+
+            if (e.ClickedItem.Text == "Изменить данные")
+            {
+                contextMenuTable.Hide();
+                EditTableData();
+            }
+
+            if (e.ClickedItem.Text == "Удалить")
+            {
+                contextMenuTable.Hide();
+                DeleteTable();
+            }
+        }
+
+        private void AddTable()
         {
             var db = new ApplicationContext();
             var nameTable = new NameTable();
 
-            var text1 = Localization.Translate("Title for the table");
-            var text2 = Localization.Translate("Add");
+            var text1 = "Название таблицы";
+            var text2 = "Добавить";
 
             do
             {
@@ -114,7 +257,7 @@ namespace DockFlow
                 {
                     if (nameTableName != null && nameTableName.Any())
                     {
-                        MessageBox.Show($"{Localization.Translate("TableExists")}");
+                        MessageBox.Show("Таблица уже существует");
                     }
                     else
                     {
@@ -127,114 +270,119 @@ namespace DockFlow
             while (nameTable.Name != "");
         }
 
-        //Label2 choose table from DB "NameTable"
-        private void toolStripComboBox1_DropDown(object sender, EventArgs e)
-        {
-            toolStripComboBox1.Items.Clear();
-
-            var db = new ApplicationContext();
-            var nameTables = db.NameTable.ToList();
-
-            foreach (var selectedSample in nameTables)
-            {
-                var item = new ComboboxItem();
-                item.Text = selectedSample.Name;
-
-                toolStripComboBox1.Items.Add(item);
-            }
-        }
-
-        //Label2 Edit NameTable
-        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        private void EditTableName()
         {
             var db = new ApplicationContext();
-            var nameTable = new NameTable();
 
-            if (toolStripComboBox1.Text != "")
+            if (comboBox2.Text != "")
             {
-                var listLine = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-                string currentValue = listLine.FirstOrDefault().Name;
+                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text).Name;
 
-                var text1 = Localization.Translate("Title for the table");
-                var text2 = Localization.Translate("Add");
+                var text1 = "Название таблицы";
+                var text2 = "Изменить";
 
-                string newName = Interaction.InputBox($"{text1}", $"{text2}", $"{currentValue}");
+                string newName = Interaction.InputBox($"{text1}", $"{text2}", $"{currentTableName}");
                 if (newName != "")
                 {
-                    foreach (var item in listLine)
-                    {
-                        item.Name = newName;
-                        db.Update(item);
-                    }
+                    db.Update(currentTableName = newName);
                     db.SaveChanges();
 
-                    toolStripComboBox1.Text = default;
+                    comboBox2.Text = default;
                     dataGridView1.Columns.Clear();
                     dataGridView1.Refresh();
                 }
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("NoSelect")}");
+                MessageBox.Show("Таблица не выбрана");
             }
         }
 
-        //Label2 Delete NameTable
-        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void EditTableData()
+        {
+            Form2 form = new Form2($"{comboBox2.Text}");
+            form.ShowDialog();
+        }
+
+        private void DeleteTable()
         {
             var db = new ApplicationContext();
 
-            if (toolStripComboBox1.Text != "")
+            if (comboBox2.Text != "")
             {
-                var listLine = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-                string currentValue = listLine.FirstOrDefault().Name;
+                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text);
 
                 DialogResult result = MessageBox.Show(
-                    Localization.Translate("Check: delete?"),
-                    Localization.Translate("Delete"),
+                    "Вы действительно хотите удалить?",
+                    "Удалить",
                     MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    db.NameTable.RemoveRange(listLine);
+                    db.NameTable.RemoveRange(currentTableName);
                     db.SaveChanges();
 
-                    toolStripComboBox1.Text = default;
+                    comboBox2.Text = default;
                     dataGridView1.Columns.Clear();
                     dataGridView1.Refresh();
                 }
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("NoSelect")}");
+                MessageBox.Show("Таблица не выбрана");
             }
         }
 
-        //dataGrid from NameTable from Id
-        private void toolStripComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void loadDataGrid()
         {
-            if (toolStripComboBox1.Text != "")
+            var db = new ApplicationContext();
+
+            DataTable dataTable = new DataTable();
+            DataRow dataRow0 = null;
+            DataRow dataRow1 = null;
+
+            dataTable.Columns.Add(new DataColumn("Параметр в документе"));
+            dataTable.Columns.Add(new DataColumn("Значение параметра"));
+
+            dataRow0 = dataTable.NewRow();
+            dataRow1 = dataTable.NewRow();
+
+            if (comboBox1.Text != "")
             {
-                var db = new ApplicationContext();
-
-                var nameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-                var parameters = db.Parameter.ToList().Where(x => x.NameTableId == nameTable.FirstOrDefault().Id);
-
-                DataTable dataTable = new DataTable();
-
-                dataTable.Columns.Add("Parameter Name");
-                dataTable.Columns.Add("Parameter Value");
-
-                DataRow dataRow = dataTable.NewRow();
-
-                foreach (var parameter in parameters)
+                var currentDOC = db.DocumentSample.ToList().Where(x => x.Name == comboBox1.Text);
+                foreach (var DOCParameter in currentDOC)
                 {
-                    dataTable.Rows.Add(parameter.Name, parameter.Value);
+                    string[] parseDOC = DOCParameter.ValueParseDoc.Split(",");
+                    foreach (var item in parseDOC)
+                    {
+                        dataTable.Rows.Add(dataRow0[0] = item);
+                    }
                 }
-                dataGridView1.DataSource = dataTable;
-                dataGridView1.Columns[0].Width = 270;
-                dataGridView1.Columns[1].Width = 270;
             }
+
+            if (comboBox2.Text != "")
+            {
+                var currentNameTable = db.NameTable.ToList().Where(x => x.Name == comboBox2.Text);
+                var currentParameters = db.Parameter.ToList().Where(x => x.NameTable.Id == currentNameTable.FirstOrDefault().Id);
+
+                foreach (var parameter in currentParameters)
+                {
+                    dataTable.Rows.Add(dataRow1[1] = parameter.Value);
+                }
+            }
+
+            dataGridView1.DataSource = dataTable;
+            refreshDataGrid();
         }
+
+        private void refreshDataGrid()
+        {
+            var headerRow = dataGridView1.RowHeadersWidth / 2;
+            dataGridView1.Columns[0].Width = dataGridView1.Width / 2 - headerRow;
+            dataGridView1.Columns[1].Width = dataGridView1.Width / 2 - headerRow;
+        }
+
+
+
 
         public void replaceAndSaveDOC(int idDOC, int idParameter)
         {
@@ -283,7 +431,7 @@ namespace DockFlow
             File.Delete(fileStream.Name);
         }
 
-        private void panel6_Click(object sender, EventArgs e)
+        private void panel2_Click(object sender, EventArgs e)
         {
             var db = new ApplicationContext();
 
@@ -303,159 +451,24 @@ namespace DockFlow
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        public class ComboboxItem
         {
-            var db = new ApplicationContext();
+            public string? Text { get; set; }
 
-            if (comboBox1.Text != "")
+            public override string ToString()
             {
-                var documentSample = db.DocumentSample.ToList().Where(x => x.Name == comboBox1.Text);
-
-                DialogResult result = MessageBox.Show(
-                    Localization.Translate("Check: delete?"),
-                    Localization.Translate("Delete"),
-                    MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    db.DocumentSample.RemoveRange(documentSample);
-                    db.SaveChanges();
-                    comboBox1.Text = default;
-                }
-            }
-            else
-            {
-                MessageBox.Show($"{Localization.Translate("NoSelect")}");
+                return Text;
             }
         }
 
-        private void comboBox1_DropDown(object sender, EventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox1.Items.Clear();
-
-            var db = new ApplicationContext();
-            var documentSample = db.DocumentSample.ToList();
-
-            foreach (var selectedSample in documentSample)
-            {
-                var item = new ComboboxItem();
-                item.Text = selectedSample.Name;
-
-                comboBox1.Items.Add(item);
-            }
+            loadDataGrid();
         }
 
-        private void comboBox2_DropDown(object sender, EventArgs e)
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox2.Items.Clear();
-
-            var db = new ApplicationContext();
-            var nameTable = db.NameTable.ToList();
-
-            foreach (var selectedName in nameTable)
-            {
-                var item = new ComboboxItem();
-                item.Text = selectedName.Name;
-
-                comboBox2.Items.Add(item);
-            }
-        }
-
-        public void changeDataGrid()
-        {
-            var db = new ApplicationContext();
-            var parameter = new Parameter();
-
-            if (toolStripComboBox1.Text != "")
-            {
-                var currentNameTable = db.NameTable.ToList().Where(x => x.Name == $"{toolStripComboBox1.Text}");
-                int nameTableId = currentNameTable.FirstOrDefault().Id;
-
-                var currentParameterId = db.Parameter.ToList().Where(x => x.NameTableId == nameTableId);
-
-                db.Parameter.RemoveRange(currentParameterId);
-
-                for (var j = 0; j < dataGridView1.RowCount - 1; j++)
-                {
-                    var cells1 = dataGridView1.Rows[j].Cells[0].Value.ToString();
-                    var cells2 = dataGridView1.Rows[j].Cells[1].Value.ToString();
-
-                    parameter.Id = Guid.NewGuid().ToString();
-                    parameter.NameTableId = nameTableId;
-                    parameter.Name = cells1;
-                    parameter.Value = cells2;
-
-                    db.AddRange(parameter);
-                    db.SaveChanges();
-                }
-            }
-        }
-
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            changeDataGrid();
-        }
-
-        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            changeDataGrid();
-        }
-
-        private void panel1_MouseEnter(object sender, EventArgs e)
-        {
-            panel1.BackColor = Color.FromArgb(18, 65, 121);
-        }
-
-        private void panel1_MouseLeave(object sender, EventArgs e)
-        {
-            panel1.BackColor = Color.FromArgb(43, 86, 154);
-        }
-
-        private void panel2_MouseEnter(object sender, EventArgs e)
-        {
-            panel2.BackColor = Color.FromArgb(18, 65, 121);
-        }
-
-        private void panel2_MouseLeave(object sender, EventArgs e)
-        {
-            panel2.BackColor = Color.FromArgb(43, 86, 154);
-        }
-
-        private void panel3_MouseEnter(object sender, EventArgs e)
-        {
-            panel3.BackColor = Color.FromArgb(18, 65, 121);
-        }
-
-        private void panel3_MouseLeave(object sender, EventArgs e)
-        {
-            panel3.BackColor = Color.FromArgb(43, 86, 154);
-        }
-
-        private void panel2_Click(object sender, EventArgs e)
-        {
-            if (tableLayoutPanel3.Visible == true)
-            {
-                tableLayoutPanel3.Visible = false;
-                panel5.Visible = false;
-            }
-            else
-            {
-                tableLayoutPanel3.Visible = true;
-                panel5.Visible = false;
-            }
-        }
-
-        private void panel1_Click(object sender, EventArgs e)
-        {
-            if (panel5.Visible == true)
-            {
-                panel5.Visible = false;
-                tableLayoutPanel3.Visible = false;
-            }
-            else
-            {
-                panel5.Visible = true;
-                tableLayoutPanel3.Visible = false;
-            }
+            loadDataGrid();
         }
     }
 }

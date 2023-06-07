@@ -20,6 +20,7 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
+        public string? ValueParseDoc { get; set; }
     }
 
     public class NameTable
@@ -31,7 +32,7 @@ namespace DockFlow
 
     public class Parameter
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public int NameTableId { get; set; }
         public string? Name { get; set; }
         public string? Value { get; set; }
