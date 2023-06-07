@@ -11,7 +11,7 @@ namespace DockFlow
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=DF_db.db");
+            optionsBuilder.UseSqlite("Data Source=DF_d1b.db");
         }
     }
 
@@ -20,14 +20,13 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
-        public string? ValueParseDoc { get; set; }
+        public string ValueParseDoc { get; set; }
     }
 
     public class NameTable
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        ICollection<Parameter> Parameter { get; set; } = new List<Parameter>();
     }
 
     public class Parameter

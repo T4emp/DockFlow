@@ -336,42 +336,32 @@ namespace DockFlow
         {
             var db = new ApplicationContext();
 
-            DataTable dataTable = new DataTable();
-            DataRow dataRow0 = null;
-            DataRow dataRow1 = null;
-
+            var dataTable = new DataTable();
             dataTable.Columns.Add(new DataColumn("Параметр в документе"));
             dataTable.Columns.Add(new DataColumn("Значение параметра"));
 
-            dataRow0 = dataTable.NewRow();
-            dataRow1 = dataTable.NewRow();
-
-            if (comboBox1.Text != "")
+            if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(comboBox2.Text))
             {
-                var currentDOC = db.DocumentSample.ToList().Where(x => x.Name == comboBox1.Text);
-                foreach (var DOCParameter in currentDOC)
+                var currentDOC = db.DocumentSample.First(x => x.Name == comboBox1.Text);
+
+                var currentNameTable = db.NameTable.First(x => x.Name == comboBox2.Text);
+                var currentParameters = db.Parameter.Where(x => x.NameTableId == currentNameTable.Id).ToList();
+
+                foreach (var param in currentDOC.ValueParseDoc.Split(","))
                 {
-                    string[] parseDOC = DOCParameter.ValueParseDoc.Split(",");
-                    foreach (var item in parseDOC)
+                    var clearParamValue = param.Replace(">", string.Empty).Replace("<", string.Empty);
+
+                    var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
+                    if (paramValue != null)
                     {
-                        dataTable.Rows.Add(dataRow0[0] = item);
+                        dataTable.Rows.Add(paramValue.Name, paramValue.Value);
                     }
                 }
+
+                dataGridView1.DataSource = dataTable;
+
+                refreshDataGrid();
             }
-
-            if (comboBox2.Text != "")
-            {
-                var currentNameTable = db.NameTable.ToList().Where(x => x.Name == comboBox2.Text);
-                var currentParameters = db.Parameter.ToList().Where(x => x.NameTable.Id == currentNameTable.FirstOrDefault().Id);
-
-                foreach (var parameter in currentParameters)
-                {
-                    dataTable.Rows.Add(dataRow1[1] = parameter.Value);
-                }
-            }
-
-            dataGridView1.DataSource = dataTable;
-            refreshDataGrid();
         }
 
         private void refreshDataGrid()
@@ -380,9 +370,6 @@ namespace DockFlow
             dataGridView1.Columns[0].Width = dataGridView1.Width / 2 - headerRow;
             dataGridView1.Columns[1].Width = dataGridView1.Width / 2 - headerRow;
         }
-
-
-
 
         public void replaceAndSaveDOC(int idDOC, int idParameter)
         {
@@ -447,7 +434,7 @@ namespace DockFlow
             }
             else
             {
-                MessageBox.Show($"{Localization.Translate("Document or table not selected")}");
+                MessageBox.Show($"Document or table not selected");
             }
         }
 
