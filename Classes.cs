@@ -11,7 +11,7 @@ namespace DockFlow
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=DF_d1b.db");
+            optionsBuilder.UseSqlite("Data Source=DF_db.db");
         }
     }
 
