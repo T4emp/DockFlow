@@ -40,12 +40,14 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.contextMenuTable = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.contextMenuDOC = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.button3 = new System.Windows.Forms.Button();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.button3);
             this.panel5.Controls.Add(this.button2);
             this.panel5.Controls.Add(this.dataGridView1);
             this.panel5.Controls.Add(this.button1);
@@ -148,6 +150,17 @@
             this.contextMenuDOC.Size = new System.Drawing.Size(61, 4);
             this.contextMenuDOC.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuDOC_ItemClicked);
             // 
+            // button3
+            // 
+            this.button3.AutoSize = true;
+            this.button3.Location = new System.Drawing.Point(718, 610);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(76, 25);
+            this.button3.TabIndex = 11;
+            this.button3.Text = "Сохранить";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -177,5 +190,6 @@
         private Button button2;
         private ContextMenuStrip contextMenuTable;
         private ContextMenuStrip contextMenuDOC;
+        private Button button3;
     }
 }

@@ -3,8 +3,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.VisualBasic;
 using System.Data;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
 namespace DockFlow
@@ -113,8 +111,8 @@ namespace DockFlow
                     {
                         Body body = doc.MainDocumentPart.Document.Body;
                         var text = body.InnerText;
-                        var textSpace = text.Replace("<", " <").Replace(">", "> ");
-                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith("<") && x.EndsWith(">"));
+                        var textSpace = text.Replace("[", " [").Replace("]", "] ");
+                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith("[") && x.EndsWith("]"));
                         if (parameterList != null && parameterList.Any())
                         {
                             sample.Name = name;
@@ -349,13 +347,10 @@ namespace DockFlow
 
                 foreach (var param in currentDOC.ValueParseDoc.Split(","))
                 {
-                    var clearParamValue = param.Replace(">", string.Empty).Replace("<", string.Empty);
-
+                    var clearParamValue = param.Replace("]", string.Empty).Replace("[", string.Empty);
                     var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
-                    if (paramValue != null)
-                    {
-                        dataTable.Rows.Add(paramValue.Name, paramValue.Value);
-                    }
+
+                    dataTable.Rows.Add(clearParamValue, paramValue?.Value ?? string.Empty);
                 }
 
                 dataGridView1.DataSource = dataTable;
@@ -371,70 +366,77 @@ namespace DockFlow
             dataGridView1.Columns[1].Width = dataGridView1.Width / 2 - headerRow;
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var db = new ApplicationContext();
+
+            if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(comboBox2.Text))
+            {
+                var currentDOC = db.DocumentSample.First(x => x.Name == comboBox1.Text);
+                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text);
+
+                replaceAndSaveDOC(currentDOC.Id, currentTableName.Id);
+            }
+            else
+            {
+                MessageBox.Show("Документ или таблица не выбрана");
+            }
+        }
+
         public void replaceAndSaveDOC(int idDOC, int idParameter)
         {
             var db = new ApplicationContext();
 
-            var DOCS = db.DocumentSample.ToList().Where(x => x.Id == idDOC);
-            var DOC = DOCS.FirstOrDefault().File;
-
+            var currentDOC = db.DocumentSample.First(x => x.Id == idDOC);
             var parameters = db.Parameter.ToList().Where(x => x.NameTableId == idParameter);
 
-            using FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite);
-
-            fileStream.Write(DOC);
-            fileStream.Close();
-
-            using Stream streamFile = File.Open(fileStream.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using WordprocessingDocument doc = WordprocessingDocument.Open(streamFile, false);
-            WordprocessingDocument reportDOC = (WordprocessingDocument)doc.Clone();
-            reportDOC.ChangeDocumentType(WordprocessingDocumentType.Document);
-
-            var body = reportDOC.MainDocumentPart!.Document.Body;
-
-            foreach (var text in body.Descendants<Text>())
+            using (FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
             {
-                foreach (var parameter in parameters)
+                fileStream.Write(currentDOC.File);
+                fileStream.Close();
+                using (Stream streamFile = File.Open(fileStream.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    text.Text = text.Text.Replace(parameter.Name, parameter.Value);
+                    using (WordprocessingDocument doc = WordprocessingDocument.Open(streamFile, false))
+                    {
+                        WordprocessingDocument reportDOC = (WordprocessingDocument)doc.Clone();
+                        reportDOC.ChangeDocumentType(WordprocessingDocumentType.Document);
+
+                        var body = reportDOC.MainDocumentPart!.Document.Body;
+
+                        var parameterValueList = new Dictionary<string, string>();
+                        var templateParameterList = currentDOC.ValueParseDoc.Split(",");
+
+                        for (var i = 0; i < templateParameterList.Length; i++)
+                        {
+                            parameterValueList.Add(templateParameterList[i], dataGridView1.Rows[i].Cells[1].Value!.ToString());
+                        }
+
+                        foreach (var text in body.Descendants<Text>())
+                        {
+                            foreach (var parameter in parameterValueList)
+                            {
+                                text.Text = text.Text.Replace(parameter.Key, parameter.Value);
+                            }
+                        }
+
+                        using (var saveFileDialog = new SaveFileDialog())
+                        {
+                            saveFileDialog.FileName = Guid.NewGuid().ToString();
+                            saveFileDialog.DefaultExt = "docx";
+
+                            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                WordprocessingDocument outputDOC = (WordprocessingDocument)reportDOC.SaveAs(saveFileDialog.FileName);
+                                outputDOC.Close();
+                            }
+                        }
+
+                        reportDOC.Close();
+                        streamFile.Close();
+
+                        File.Delete(fileStream.Name);
+                    }
                 }
-            }
-
-            using (var saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.FileName = Guid.NewGuid().ToString();
-                saveFileDialog.DefaultExt = "docx";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    WordprocessingDocument outputDOC = (WordprocessingDocument)reportDOC.SaveAs(saveFileDialog.FileName);
-                    outputDOC.Close();
-                }
-            }
-
-            reportDOC.Close();
-            streamFile.Close();
-
-            File.Delete(fileStream.Name);
-        }
-
-        private void panel2_Click(object sender, EventArgs e)
-        {
-            var db = new ApplicationContext();
-
-            if (comboBox1.Text != "" && comboBox2.Text != "")
-            {
-                var documentSample = db.DocumentSample.ToList().Where(x => x.Name == $"{comboBox1.Text}");
-                int currentDOC = documentSample.FirstOrDefault().Id;
-
-                var nameTable = db.NameTable.ToList().Where(x => x.Name == $"{comboBox2.Text}");
-                int currentNameTable = nameTable.FirstOrDefault().Id;
-
-                replaceAndSaveDOC(currentDOC, currentNameTable);
-            }
-            else
-            {
-                //MessageBox.Show($"{Localization.Translate("Document or table not selected")}");
             }
         }
 
