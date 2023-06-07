@@ -434,7 +434,7 @@ namespace DockFlow
             }
             else
             {
-                MessageBox.Show($"Document or table not selected");
+                //MessageBox.Show($"{Localization.Translate("Document or table not selected")}");
             }
         }
 
