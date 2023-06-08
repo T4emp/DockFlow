@@ -1,15 +1,15 @@
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.VisualBasic;
 using System.Data;
-using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
+using System.Windows.Forms;
+using Xceed.Words.NET;
 
 namespace DockFlow
 {
     public partial class Form1 : Form
     {
-        public const string Symbol = "@";
+        public const string Symbol1 = "<";
+        public const string Symbol2 = ">";
+
         public Form1()
         {
             InitializeComponent();
@@ -108,13 +108,13 @@ namespace DockFlow
                 using (var fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
                 {
                     fileStream.Write(file);
-                    using (WordprocessingDocument doc = WordprocessingDocument.Open(fileStream, false))
+                    using (var DOC = DocX.Load(fileStream))
                     {
-                        Body body = doc.MainDocumentPart.Document.Body;
-                        var text = body.InnerText;
+                        var txt = DOC.Text;
 
-                        //var textSpace = text.Replace($"{Symbol}", $" {Symbol}").Replace($"{Symbol}", $"{Symbol} ");
-                        var parameterList = text.Split(" ").Where(x => x.StartsWith($"{Symbol}") && x.EndsWith($"{Symbol}"));
+                        var textSpace = txt.Replace($"{Symbol1}", $" {Symbol1}").Replace($"{Symbol2}", $"{Symbol2} ");
+                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith($"{Symbol1}") && x.EndsWith($"{Symbol2}"));
+
                         if (parameterList != null && parameterList.Any())
                         {
                             sample.Name = name;
@@ -125,6 +125,7 @@ namespace DockFlow
                             db.SaveChanges();
                             MessageBox.Show($"Файл '{name}' добавлен");
                         }
+
                         else MessageBox.Show($"Файл '{name}' не имеет параметров");
                     }
                     fileStream.Dispose();
@@ -169,7 +170,10 @@ namespace DockFlow
                 {
                     db.DocumentSample.RemoveRange(documentSample);
                     db.SaveChanges();
+
                     comboBox1.Text = default;
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Refresh();
                 }
             }
             else
@@ -276,15 +280,16 @@ namespace DockFlow
 
             if (comboBox2.Text != "")
             {
-                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text).Name;
+                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text);
 
                 var text1 = "Название таблицы";
                 var text2 = "Изменить";
 
-                string newName = Interaction.InputBox($"{text1}", $"{text2}", $"{currentTableName}");
+                string newName = Interaction.InputBox($"{text1}", $"{text2}", $"{currentTableName.Name}");
                 if (newName != "")
                 {
-                    db.Update(currentTableName = newName);
+                    currentTableName.Name = newName;
+                    db.Update(currentTableName);
                     db.SaveChanges();
 
                     comboBox2.Text = default;
@@ -349,19 +354,18 @@ namespace DockFlow
 
                 foreach (var param in currentDOC.ValueParseDoc.Split(","))
                 {
-                    var clearParamValue = param.Replace($"{Symbol}", string.Empty).Replace($"{Symbol}", string.Empty);
+                    var clearParamValue = param.Replace($"{Symbol1}", string.Empty).Replace($"{Symbol2}", string.Empty);
                     var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
 
                     dataTable.Rows.Add(clearParamValue, paramValue?.Value ?? string.Empty);
                 }
 
                 dataGridView1.DataSource = dataTable;
-
-                refreshDataGrid();
+                resizeDataGrid();
             }
         }
 
-        private void refreshDataGrid()
+        private void resizeDataGrid()
         {
             var headerRow = dataGridView1.RowHeadersWidth / 2;
             dataGridView1.Columns[0].Width = dataGridView1.Width / 2 - headerRow;
@@ -398,13 +402,8 @@ namespace DockFlow
                 fileStream.Close();
                 using (Stream streamFile = File.Open(fileStream.Name, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    using (WordprocessingDocument doc = WordprocessingDocument.Open(streamFile, false))
+                    using (var DOC = DocX.Load(streamFile))
                     {
-                        WordprocessingDocument reportDOC = (WordprocessingDocument)doc.Clone();
-                        reportDOC.ChangeDocumentType(WordprocessingDocumentType.Document);
-
-                        var body = reportDOC.MainDocumentPart!.Document.Body;
-
                         var parameterValueList = new Dictionary<string, string>();
                         var templateParameterList = currentDOC.ValueParseDoc.Split(",");
 
@@ -413,31 +412,26 @@ namespace DockFlow
                             parameterValueList.Add(templateParameterList[i], dataGridView1.Rows[i].Cells[1].Value!.ToString());
                         }
 
-                        foreach (var text in body.Descendants<Text>())
+                        foreach (var parameter in parameterValueList)
                         {
-                            foreach (var parameter in parameterValueList)
-                            {
-                                text.Text = text.Text.Replace(parameter.Key, parameter.Value);
-                            }
+                            DOC.ReplaceText(parameter.Key, parameter.Value);
                         }
 
                         using (var saveFileDialog = new SaveFileDialog())
                         {
-                            saveFileDialog.FileName = Guid.NewGuid().ToString();
+                            saveFileDialog.Title = "Сохранить документ:";
+                            saveFileDialog.Filter = "Документ | *.doc*";
+                            saveFileDialog.FileName = currentDOC.Name;
                             saveFileDialog.DefaultExt = "docx";
 
                             if (saveFileDialog.ShowDialog() == DialogResult.OK)
                             {
-                                WordprocessingDocument outputDOC = (WordprocessingDocument)reportDOC.SaveAs(saveFileDialog.FileName);
-                                outputDOC.Close();
+                                DOC.SaveAs(saveFileDialog.FileName);
                             }
                         }
-
-                        reportDOC.Close();
-                        streamFile.Close();
-
-                        File.Delete(fileStream.Name);
                     }
+                    streamFile.Dispose();
+                    File.Delete(fileStream.Name);
                 }
             }
         }
