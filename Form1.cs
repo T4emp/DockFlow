@@ -9,6 +9,7 @@ namespace DockFlow
 {
     public partial class Form1 : Form
     {
+        public const string Symbol = "@";
         public Form1()
         {
             InitializeComponent();
@@ -111,8 +112,9 @@ namespace DockFlow
                     {
                         Body body = doc.MainDocumentPart.Document.Body;
                         var text = body.InnerText;
-                        var textSpace = text.Replace("[", " [").Replace("]", "] ");
-                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith("[") && x.EndsWith("]"));
+
+                        //var textSpace = text.Replace($"{Symbol}", $" {Symbol}").Replace($"{Symbol}", $"{Symbol} ");
+                        var parameterList = text.Split(" ").Where(x => x.StartsWith($"{Symbol}") && x.EndsWith($"{Symbol}"));
                         if (parameterList != null && parameterList.Any())
                         {
                             sample.Name = name;
@@ -347,7 +349,7 @@ namespace DockFlow
 
                 foreach (var param in currentDOC.ValueParseDoc.Split(","))
                 {
-                    var clearParamValue = param.Replace("]", string.Empty).Replace("[", string.Empty);
+                    var clearParamValue = param.Replace($"{Symbol}", string.Empty).Replace($"{Symbol}", string.Empty);
                     var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
 
                     dataTable.Rows.Add(clearParamValue, paramValue?.Value ?? string.Empty);
