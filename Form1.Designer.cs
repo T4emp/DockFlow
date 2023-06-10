@@ -28,169 +28,273 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.contextMenuTable = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.contextMenuDOC = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.SuspendLayout();
+            menuStrip1 = new MenuStrip();
+            templateToolStripMenuItem = new ToolStripMenuItem();
+            addToolStripMenuItem = new ToolStripMenuItem();
+            exportToolStripMenuItem = new ToolStripMenuItem();
+            deleteToolStripMenuItem = new ToolStripMenuItem();
+            tableToolStripMenuItem = new ToolStripMenuItem();
+            createTableToolStripMenuItem = new ToolStripMenuItem();
+            editTableNameToolStripMenuItem = new ToolStripMenuItem();
+            deleteTableToolStripMenuItem = new ToolStripMenuItem();
+            documentToolStripMenuItem = new ToolStripMenuItem();
+            saveAsToolStripMenuItem = new ToolStripMenuItem();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            dataGridView1 = new DataGridView();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            listView1 = new ListView();
+            columnHeader1 = new ColumnHeader();
+            columnHeader2 = new ColumnHeader();
+            textBox1 = new TextBox();
+            tabPage2 = new TabPage();
+            listView2 = new ListView();
+            textBox2 = new TextBox();
+            menuStrip1.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            SuspendLayout();
             // 
-            // panel5
+            // menuStrip1
             // 
-            this.panel5.Controls.Add(this.button3);
-            this.panel5.Controls.Add(this.button2);
-            this.panel5.Controls.Add(this.dataGridView1);
-            this.panel5.Controls.Add(this.button1);
-            this.panel5.Controls.Add(this.label2);
-            this.panel5.Controls.Add(this.comboBox2);
-            this.panel5.Controls.Add(this.label1);
-            this.panel5.Controls.Add(this.comboBox1);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(806, 647);
-            this.panel5.TabIndex = 3;
+            menuStrip1.Items.AddRange(new ToolStripItem[] { templateToolStripMenuItem, tableToolStripMenuItem, documentToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(910, 24);
+            menuStrip1.TabIndex = 4;
+            menuStrip1.Text = "menuStrip1";
             // 
-            // button3
+            // templateToolStripMenuItem
             // 
-            this.button3.AutoSize = true;
-            this.button3.Location = new System.Drawing.Point(718, 610);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(76, 25);
-            this.button3.TabIndex = 11;
-            this.button3.Text = "Сохранить";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            templateToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { addToolStripMenuItem, exportToolStripMenuItem, deleteToolStripMenuItem });
+            templateToolStripMenuItem.Name = "templateToolStripMenuItem";
+            templateToolStripMenuItem.Size = new Size(64, 20);
+            templateToolStripMenuItem.Text = "Шаблон";
             // 
-            // button2
+            // addToolStripMenuItem
             // 
-            this.button2.AutoSize = true;
-            this.button2.Location = new System.Drawing.Point(665, 111);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(93, 25);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "Инструменты";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            addToolStripMenuItem.Name = "addToolStripMenuItem";
+            addToolStripMenuItem.Size = new Size(133, 22);
+            addToolStripMenuItem.Text = "Добавить";
+            addToolStripMenuItem.Click += addToolStripMenuItem_Click;
+            // 
+            // exportToolStripMenuItem
+            // 
+            exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            exportToolStripMenuItem.Size = new Size(133, 22);
+            exportToolStripMenuItem.Text = "Сохранить";
+            exportToolStripMenuItem.Click += exportToolStripMenuItem_Click;
+            // 
+            // deleteToolStripMenuItem
+            // 
+            deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            deleteToolStripMenuItem.Size = new Size(133, 22);
+            deleteToolStripMenuItem.Text = "Удалить";
+            deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
+            // 
+            // tableToolStripMenuItem
+            // 
+            tableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createTableToolStripMenuItem, editTableNameToolStripMenuItem, deleteTableToolStripMenuItem });
+            tableToolStripMenuItem.Name = "tableToolStripMenuItem";
+            tableToolStripMenuItem.Size = new Size(128, 20);
+            tableToolStripMenuItem.Text = "Таблица с данными";
+            // 
+            // createTableToolStripMenuItem
+            // 
+            createTableToolStripMenuItem.Name = "createTableToolStripMenuItem";
+            createTableToolStripMenuItem.Size = new Size(153, 22);
+            createTableToolStripMenuItem.Text = "Создать";
+            createTableToolStripMenuItem.Click += createTableToolStripMenuItem_Click;
+            // 
+            // editTableNameToolStripMenuItem
+            // 
+            editTableNameToolStripMenuItem.Name = "editTableNameToolStripMenuItem";
+            editTableNameToolStripMenuItem.Size = new Size(153, 22);
+            editTableNameToolStripMenuItem.Text = "Изменить имя";
+            editTableNameToolStripMenuItem.Click += editTableNameToolStripMenuItem_Click;
+            // 
+            // deleteTableToolStripMenuItem
+            // 
+            deleteTableToolStripMenuItem.Name = "deleteTableToolStripMenuItem";
+            deleteTableToolStripMenuItem.Size = new Size(153, 22);
+            deleteTableToolStripMenuItem.Text = "Удалить";
+            deleteTableToolStripMenuItem.Click += deleteTableToolStripMenuItem_Click;
+            // 
+            // documentToolStripMenuItem
+            // 
+            documentToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { saveAsToolStripMenuItem });
+            documentToolStripMenuItem.Name = "documentToolStripMenuItem";
+            documentToolStripMenuItem.Size = new Size(73, 20);
+            documentToolStripMenuItem.Text = "Документ";
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            saveAsToolStripMenuItem.Size = new Size(133, 22);
+            saveAsToolStripMenuItem.Text = "Сохранить";
+            saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 2;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+            tableLayoutPanel1.Controls.Add(dataGridView1, 1, 0);
+            tableLayoutPanel1.Controls.Add(tabControl1, 0, 0);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 24);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 1;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(910, 548);
+            tableLayoutPanel1.TabIndex = 5;
             // 
             // dataGridView1
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeColumns = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(58, 157);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-            this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new System.Drawing.Size(668, 414);
-            this.dataGridView1.TabIndex = 9;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(367, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(540, 542);
+            dataGridView1.TabIndex = 0;
             // 
-            // button1
+            // tabControl1
             // 
-            this.button1.AutoSize = true;
-            this.button1.Location = new System.Drawing.Point(298, 111);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 25);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "Инструменты";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(3, 3);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(358, 542);
+            tabControl1.TabIndex = 1;
             // 
-            // label2
+            // tabPage1
             // 
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(409, 60);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(250, 36);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Таблица:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            tabPage1.Controls.Add(listView1);
+            tabPage1.Controls.Add(textBox1);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(350, 514);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Шаблоны";
+            tabPage1.UseVisualStyleBackColor = true;
             // 
-            // comboBox2
+            // listView1
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(409, 112);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(250, 23);
-            this.comboBox2.TabIndex = 6;
-            this.comboBox2.DropDown += new System.EventHandler(this.comboBox2_DropDown);
-            this.comboBox2.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
+            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
+            listView1.Dock = DockStyle.Fill;
+            listView1.Location = new Point(3, 26);
+            listView1.Name = "listView1";
+            listView1.Size = new Size(344, 485);
+            listView1.TabIndex = 1;
+            listView1.UseCompatibleStateImageBehavior = false;
+            listView1.View = View.Details;
             // 
-            // label1
+            // columnHeader1
             // 
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(42, 60);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(250, 36);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Документ:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            columnHeader1.Text = "Иконка";
             // 
-            // comboBox1
+            // columnHeader2
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(42, 112);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(250, 23);
-            this.comboBox1.TabIndex = 3;
-            this.comboBox1.DropDown += new System.EventHandler(this.comboBox1_DropDown);
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            columnHeader2.Text = "Название";
+            columnHeader2.TextAlign = HorizontalAlignment.Center;
+            columnHeader2.Width = 250;
             // 
-            // contextMenuTable
+            // textBox1
             // 
-            this.contextMenuTable.Name = "contextMenuStrip2";
-            this.contextMenuTable.Size = new System.Drawing.Size(61, 4);
-            this.contextMenuTable.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuTable_ItemClicked);
+            textBox1.Dock = DockStyle.Top;
+            textBox1.Location = new Point(3, 3);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(344, 23);
+            textBox1.TabIndex = 0;
+            textBox1.MouseEnter += textBox1_MouseEnter;
+            textBox1.MouseLeave += textBox1_MouseLeave;
             // 
-            // contextMenuDOC
+            // tabPage2
             // 
-            this.contextMenuDOC.Name = "contextMenuStrip1";
-            this.contextMenuDOC.Size = new System.Drawing.Size(61, 4);
-            this.contextMenuDOC.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuDOC_ItemClicked);
+            tabPage2.Controls.Add(listView2);
+            tabPage2.Controls.Add(textBox2);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(396, 501);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Таблицы с данными";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // listView2
+            // 
+            listView2.Dock = DockStyle.Fill;
+            listView2.Location = new Point(3, 26);
+            listView2.Name = "listView2";
+            listView2.Size = new Size(390, 472);
+            listView2.TabIndex = 1;
+            listView2.UseCompatibleStateImageBehavior = false;
+            // 
+            // textBox2
+            // 
+            textBox2.Dock = DockStyle.Top;
+            textBox2.Location = new Point(3, 3);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(390, 23);
+            textBox2.TabIndex = 0;
+            textBox2.MouseEnter += textBox2_MouseEnter;
+            textBox2.MouseLeave += textBox2_MouseLeave;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 647);
-            this.Controls.Add(this.panel5);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.Name = "Form1";
-            this.Text = "DockFlow";
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(910, 572);
+            Controls.Add(tableLayoutPanel1);
+            Controls.Add(menuStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MinimumSize = new Size(600, 400);
+            Name = "Form1";
+            Text = "DockFlow";
+            Load += Form1_Load;
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
-        private Panel panel5;
-        private Button button1;
-        private Label label2;
-        private ComboBox comboBox2;
-        private Label label1;
-        private ComboBox comboBox1;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem templateToolStripMenuItem;
+        private ToolStripMenuItem tableToolStripMenuItem;
+        private ToolStripMenuItem addToolStripMenuItem;
+        private ToolStripMenuItem exportToolStripMenuItem;
+        private ToolStripMenuItem deleteToolStripMenuItem;
+        private ToolStripMenuItem createTableToolStripMenuItem;
+        private ToolStripMenuItem editTableNameToolStripMenuItem;
+        private ToolStripMenuItem deleteTableToolStripMenuItem;
+        private TableLayoutPanel tableLayoutPanel1;
         private DataGridView dataGridView1;
-        private Button button2;
-        private ContextMenuStrip contextMenuTable;
-        private ContextMenuStrip contextMenuDOC;
-        private Button button3;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private TextBox textBox1;
+        private ListView listView1;
+        private TextBox textBox2;
+        private ListView listView2;
+        private ToolStripMenuItem documentToolStripMenuItem;
+        private ToolStripMenuItem saveAsToolStripMenuItem;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader2;
     }
 }

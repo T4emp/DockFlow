@@ -8,7 +8,7 @@ namespace DockFlow
         public DbSet<NameTable> NameTable => Set<NameTable>();
         public DbSet<Parameter> Parameter => Set<Parameter>();
         public ApplicationContext() => Database.EnsureCreated();
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=DF_db.db");
@@ -20,7 +20,7 @@ namespace DockFlow
         public int Id { get; set; }
         public string? Name { get; set; }
         public byte[]? File { get; set; }
-        public string ValueParseDoc { get; set; }
+        public string? ValueParseDoc { get; set; }
     }
 
     public class NameTable
