@@ -4,6 +4,8 @@ namespace DockFlow
 {
     public class TableHelper
     {
+        public Form1 form;
+
         public void AddTable()
         {
             var db = new ApplicationContext();
@@ -34,14 +36,14 @@ namespace DockFlow
             }
             while (nameTable.Name != "");
         }
-        /*
-        public void EditTableName()
+
+        public void EditTableName(string item)
         {
             var db = new ApplicationContext();
 
-            if (comboBox2.Text != "")
+            if (item != "")
             {
-                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text);
+                var currentTableName = db.NameTable.First(x => x.Name == item);
 
                 var text1 = "Название таблицы";
                 var text2 = "Изменить";
@@ -53,9 +55,7 @@ namespace DockFlow
                     db.Update(currentTableName);
                     db.SaveChanges();
 
-                    comboBox2.Text = default;
-                    dataGridView1.Columns.Clear();
-                    dataGridView1.Refresh();
+                    form.refreshDataGrid();
                 }
             }
             else
@@ -64,19 +64,13 @@ namespace DockFlow
             }
         }
 
-        public void EditTableData()
-        {
-            Form2 form = new Form2($"{comboBox2.Text}");
-            form.ShowDialog();
-        }
-
-        public void DeleteTable()
+        public void DeleteTable(string item)
         {
             var db = new ApplicationContext();
 
-            if (comboBox2.Text != "")
+            if (item != "")
             {
-                var currentTableName = db.NameTable.First(x => x.Name == comboBox2.Text);
+                var currentTableName = db.NameTable.First(x => x.Name == item);
 
                 DialogResult result = MessageBox.Show(
                     "Вы действительно хотите удалить?",
@@ -87,9 +81,7 @@ namespace DockFlow
                     db.NameTable.RemoveRange(currentTableName);
                     db.SaveChanges();
 
-                    comboBox2.Text = default;
-                    dataGridView1.Columns.Clear();
-                    dataGridView1.Refresh();
+                    form.refreshDataGrid();
                 }
             }
             else
@@ -97,6 +89,5 @@ namespace DockFlow
                 MessageBox.Show("Таблица не выбрана");
             }
         }
-        */
     }
 }

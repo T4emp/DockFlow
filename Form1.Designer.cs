@@ -46,10 +46,10 @@
             tabPage1 = new TabPage();
             listView1 = new ListView();
             columnHeader1 = new ColumnHeader();
-            columnHeader2 = new ColumnHeader();
             textBox1 = new TextBox();
             tabPage2 = new TabPage();
             listView2 = new ListView();
+            columnHeader3 = new ColumnHeader();
             textBox2 = new TextBox();
             menuStrip1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -162,6 +162,7 @@
             dataGridView1.RowTemplate.Height = 25;
             dataGridView1.Size = new Size(540, 542);
             dataGridView1.TabIndex = 0;
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             // 
             // tabControl1
             // 
@@ -188,24 +189,21 @@
             // 
             // listView1
             // 
-            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2 });
+            listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             listView1.Dock = DockStyle.Fill;
             listView1.Location = new Point(3, 26);
+            listView1.MultiSelect = false;
             listView1.Name = "listView1";
             listView1.Size = new Size(344, 485);
             listView1.TabIndex = 1;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
+            listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
             // 
             // columnHeader1
             // 
-            columnHeader1.Text = "Иконка";
-            // 
-            // columnHeader2
-            // 
-            columnHeader2.Text = "Название";
-            columnHeader2.TextAlign = HorizontalAlignment.Center;
-            columnHeader2.Width = 250;
+            columnHeader1.Text = "Название";
+            columnHeader1.Width = 250;
             // 
             // textBox1
             // 
@@ -224,26 +222,34 @@
             tabPage2.Location = new Point(4, 24);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(396, 501);
+            tabPage2.Size = new Size(350, 514);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Таблицы с данными";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // listView2
             // 
+            listView2.Columns.AddRange(new ColumnHeader[] { columnHeader3 });
             listView2.Dock = DockStyle.Fill;
             listView2.Location = new Point(3, 26);
+            listView2.MultiSelect = false;
             listView2.Name = "listView2";
-            listView2.Size = new Size(390, 472);
+            listView2.Size = new Size(344, 485);
             listView2.TabIndex = 1;
             listView2.UseCompatibleStateImageBehavior = false;
+            listView2.View = View.Details;
+            // 
+            // columnHeader3
+            // 
+            columnHeader3.Text = "Название";
+            columnHeader3.Width = 250;
             // 
             // textBox2
             // 
             textBox2.Dock = DockStyle.Top;
             textBox2.Location = new Point(3, 3);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(390, 23);
+            textBox2.Size = new Size(344, 23);
             textBox2.TabIndex = 0;
             textBox2.MouseEnter += textBox2_MouseEnter;
             textBox2.MouseLeave += textBox2_MouseLeave;
@@ -284,17 +290,18 @@
         private ToolStripMenuItem editTableNameToolStripMenuItem;
         private ToolStripMenuItem deleteTableToolStripMenuItem;
         private TableLayoutPanel tableLayoutPanel1;
-        private DataGridView dataGridView1;
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
         private TextBox textBox1;
-        private ListView listView1;
         private TextBox textBox2;
-        private ListView listView2;
         private ToolStripMenuItem documentToolStripMenuItem;
         private ToolStripMenuItem saveAsToolStripMenuItem;
-        private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
+        public DataGridView dataGridView1;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader3;
+        public ListView listView1;
+        public ListView listView2;
     }
 }

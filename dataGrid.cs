@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Xceed.Document.NET;
+﻿using System.Data;
 
 namespace DockFlow
 {
     public class dataGrid
-    {/*
-        private void loadDataGrid()
+    {
+        public const string Symbol1 = "<";
+        public const string Symbol2 = ">";
+        public Form1 form;
+
+        public DataTable loadDataGrid(string item, string item2)
         {
             var db = new ApplicationContext();
 
@@ -19,24 +16,44 @@ namespace DockFlow
             dataTable.Columns.Add(new DataColumn("Параметр в документе"));
             dataTable.Columns.Add(new DataColumn("Значение параметра"));
 
-            if (!string.IsNullOrEmpty(comboBox1.Text) && !string.IsNullOrEmpty(comboBox2.Text))
+            var currentDOC = db.DocumentSample.First(x => x.Name == item);
+
+            var currentNameTable = db.NameTable.First(x => x.Name == item2);
+            var currentParameters = db.Parameter.Where(x => x.NameTableId == currentNameTable.Id).ToList();
+
+            foreach (var param in currentDOC.ValueParseDoc.Split(","))
             {
-                var currentDOC = db.DocumentSample.First(x => x.Name == comboBox1.Text);
+                var clearParamValue = param.Replace($"{Symbol1}", string.Empty).Replace($"{Symbol2}", string.Empty);
+                var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
 
-                var currentNameTable = db.NameTable.First(x => x.Name == comboBox2.Text);
-                var currentParameters = db.Parameter.Where(x => x.NameTableId == currentNameTable.Id).ToList();
+                dataTable.Rows.Add(clearParamValue, paramValue?.Value ?? string.Empty);
+            }
 
-                foreach (var param in currentDOC.ValueParseDoc.Split(","))
-                {
-                    var clearParamValue = param.Replace($"{Symbol1}", string.Empty).Replace($"{Symbol2}", string.Empty);
-                    var paramValue = currentParameters.FirstOrDefault(x => x.Name.ToLower() == clearParamValue.ToLower());
+            return dataTable;
+        }
 
-                    dataTable.Rows.Add(clearParamValue, paramValue?.Value ?? string.Empty);
-                }
+        public void changeDataGrid(string item)
+        {
+            var db = new ApplicationContext();
+            var parameter = new Parameter();
 
-                dataGridView1.DataSource = dataTable;
+            var currentNameTable = db.NameTable.ToList().Where(x => x.Name == item);
+            var currentParameter = db.Parameter.ToList().Where(x => x.NameTable.Id == currentNameTable.FirstOrDefault().Id);
+            db.Parameter.RemoveRange(currentParameter);
+
+            for (var i = 0; i < form.dataGridView1.RowCount - 1; i++)
+            {
+                var cells1 = form.dataGridView1.Rows[i].Cells[0].Value.ToString();
+                var cells2 = form.dataGridView1.Rows[i].Cells[1].Value.ToString();
+
+                parameter.Id = Guid.NewGuid();
+                parameter.NameTableId = currentNameTable.FirstOrDefault().Id;
+                parameter.Name = cells1;
+                parameter.Value = cells2;
+
+                db.AddRange(parameter);
+                db.SaveChanges();
             }
         }
-    }*/
     }
 }

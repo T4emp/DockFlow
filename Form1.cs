@@ -1,11 +1,10 @@
-using DockFlow.Properties;
-
 namespace DockFlow
 {
     public partial class Form1 : Form
     {
         DOCHelper doc = new DOCHelper();
         TableHelper table = new TableHelper();
+        dataGrid grid = new dataGrid();
 
         public Form1()
         {
@@ -20,14 +19,13 @@ namespace DockFlow
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ParseItemView(listView1);
 
-            //doc.ExportDOC();
+            doc.ExportDOC(listView1.FocusedItem.Text);
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //doc.DeleteDOC();
+            doc.DeleteDOC(listView1.FocusedItem.Text);
         }
 
         private void createTableToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,12 +35,12 @@ namespace DockFlow
 
         private void editTableNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //table.EditTableName();
+            table.EditTableName(listView2.FocusedItem.Text);
         }
 
         private void deleteTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //table.DeleteTable();
+            table.DeleteTable(listView2.FocusedItem.Text);
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -50,47 +48,34 @@ namespace DockFlow
             //doc.ReplaceAndSaveDOC();
         }
 
-        private void UpdateListViewDOC()
+        private void listViewRefresh()
         {
             var db = new ApplicationContext();
-            var DOCS = db.DocumentSample.ToList();
+            var DocumentSample = db.DocumentSample.ToList();
+            var NameTable = db.NameTable.ToList();
 
-            foreach (var doc in DOCS)
+            foreach (var doc in DocumentSample)
             {
+                var name = doc.Name;
+                listView1.Items.Add(name);
+            }
 
+            foreach (var table in NameTable)
+            {
+                var name = table.Name;
+                listView2.Items.Add(name);
             }
         }
 
-        private void UpdateListViewTable()
+        public void refreshDataGrid()
         {
-            var db = new ApplicationContext();
-            var parameters = db.Parameter.ToList();
-
-            foreach (var parameter in parameters)
-            {
-                ListViewItem item = new ListViewItem();
-                item.Text = parameter.Value;
-
-                listView1.Items.Add(item);
-            }
-        }
-
-        public static string ParseItemView(ListView list)
-        {
-            ListView.SelectedListViewItemCollection lists = list.SelectedItems;
-            string value = null;
-
-            foreach (ListViewItem item in lists)
-            {
-                value = item.SubItems[1].Text;
-            }
-            return value;
+            dataGridView1.Columns.Clear();
+            dataGridView1.Refresh();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            UpdateListViewDOC();
-            UpdateListViewTable();
+            listViewRefresh();
         }
 
         private void textBox1_MouseEnter(object sender, EventArgs e)
@@ -127,7 +112,7 @@ namespace DockFlow
 
         private void findTextLeave()
         {
-            if (textBox1.Text == "Поиск" && textBox2.Text == "Поиск")
+            if (textBox1.Text == "" && textBox2.Text == "")
             {
                 textBox1.ForeColor = Color.Silver;
                 textBox2.ForeColor = Color.Silver;
@@ -135,6 +120,17 @@ namespace DockFlow
                 textBox1.Text = "Поиск";
                 textBox2.Text = "Поиск";
             }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.FocusedItem != null && listView2.FocusedItem != null)
+                dataGridView1.DataSource = grid.loadDataGrid(listView1.FocusedItem.Text, listView2.FocusedItem.Text);
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

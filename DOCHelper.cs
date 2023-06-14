@@ -1,6 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Data;
 using Xceed.Words.NET;
-using System.Data;
 
 namespace DockFlow
 {
@@ -8,6 +7,7 @@ namespace DockFlow
     {
         public const string Symbol1 = "<";
         public const string Symbol2 = ">";
+        public Form1 form;
 
         public void FileDialogDOC()
         {
@@ -77,7 +77,7 @@ namespace DockFlow
         public void ExportDOC(string item)
         {
             var db = new ApplicationContext();
-            var currentFile = db.DocumentSample.First();
+            var currentFile = db.DocumentSample.First(x => x.Name == item);
 
             using (var file = new SaveFileDialog())
             {
@@ -94,14 +94,13 @@ namespace DockFlow
             }
         }
 
-        /*
-        public void DeleteDOC()
+        public void DeleteDOC(string item)
         {
             var db = new ApplicationContext();
 
-            if (comboBox1.Text != "")
+            if (item != null)
             {
-                var documentSample = db.DocumentSample.ToList().Where(x => x.Name == comboBox1.Text);
+                var documentSample = db.DocumentSample.ToList().Where(x => x.Name == item);
 
                 DialogResult result = MessageBox.Show(
                     "Вы действительно хотите удалить?",
@@ -111,10 +110,7 @@ namespace DockFlow
                 {
                     db.DocumentSample.RemoveRange(documentSample);
                     db.SaveChanges();
-
-                    comboBox1.Text = default;
-                    dataGridView1.Columns.Clear();
-                    dataGridView1.Refresh();
+                    form.refreshDataGrid();
                 }
             }
             else
@@ -123,6 +119,7 @@ namespace DockFlow
             }
         }
 
+        [Obsolete]
         public void ReplaceAndSaveDOC(int idDOC, int idParameter)
         {
             var db = new ApplicationContext();
@@ -143,7 +140,7 @@ namespace DockFlow
 
                         for (var i = 0; i < templateParameterList.Length; i++)
                         {
-                            parameterValueList.Add(templateParameterList[i], dataGridView1.Rows[i].Cells[1].Value!.ToString());
+                            parameterValueList.Add(templateParameterList[i], form.dataGridView1.Rows[i].Cells[1].Value!.ToString());
                         }
 
                         foreach (var parameter in parameterValueList)
@@ -169,6 +166,5 @@ namespace DockFlow
                 }
             }
         }
-        */
     }
 }
