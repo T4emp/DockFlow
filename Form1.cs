@@ -2,9 +2,9 @@ namespace DockFlow
 {
     public partial class Form1 : Form
     {
-        DOCHelper doc = new DOCHelper();
+        public const string textFind = "Поиск";
+
         TableHelper table = new TableHelper();
-        dataGrid grid = new dataGrid();
 
         public Form1()
         {
@@ -14,121 +14,177 @@ namespace DockFlow
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            doc.FileDialogDOC();
+            DOCHelper doc = new DOCHelper(dataGridView1);
+            doc.fileDialogDOC();
+            listViewRefresh(true);
         }
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            doc.ExportDOC(listView1.FocusedItem.Text);
+            if (listView1.FocusedItem != null)
+            {
+                DOCHelper doc = new DOCHelper(dataGridView1);
+                doc.exportDOC(listView1.FocusedItem.Text);
+            }
+            else MessageBox.Show("Шаблон не выбран");
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            doc.DeleteDOC(listView1.FocusedItem.Text);
+            if (listView1.FocusedItem != null)
+            {
+                DOCHelper doc = new DOCHelper(dataGridView1);
+                doc.deleteDOC(listView1.FocusedItem.Text);
+                listViewRefresh(true);
+                dataGridRefresh();
+            }
+            else MessageBox.Show("Шаблон не выбран");
         }
 
         private void createTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            table.AddTable();
+            table.addTable();
+            listViewRefresh(true);
         }
 
         private void editTableNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            table.EditTableName(listView2.FocusedItem.Text);
+            if (listView2.FocusedItem != null)
+            {
+                table.editTableName(listView2.FocusedItem.Text);
+                listViewRefresh(true);
+                dataGridRefresh();
+            }
+            else MessageBox.Show("Таблица не выбрана");
         }
 
         private void deleteTableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            table.DeleteTable(listView2.FocusedItem.Text);
+            if (listView2.FocusedItem != null)
+            {
+                table.deleteTable(listView2.FocusedItem.Text);
+                listViewRefresh(true);
+                dataGridRefresh();
+            }
+            else MessageBox.Show("Таблица не выбрана");
         }
 
+        [Obsolete]
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            doc.ReplaceAndSaveDOC();
+            DOCHelper doc = new DOCHelper(dataGridView1);
+            if (listView1.FocusedItem != null && listView2.FocusedItem != null)
+                doc.replaceAndSaveDOC(listView1.FocusedItem.Text, listView2.FocusedItem.Text);
+            else MessageBox.Show("Шаблон или таблица не выбрана");
         }
 
-        private void listViewRefresh()
+        private void listViewRefresh(bool list)
         {
             var db = new ApplicationContext();
             var DocumentSample = db.DocumentSample.ToList();
             var NameTable = db.NameTable.ToList();
 
-            foreach (var doc in DocumentSample)
+            if (list == true)
             {
-                var name = doc.Name;
-                listView1.Items.Add(name);
+                listView1.Items.Clear();
+                listView2.Items.Clear();
+
+                foreach (var doc in DocumentSample)
+                {
+                    listView1.Items.Add(doc.Name);
+                }
+
+                foreach (var table in NameTable)
+                {
+                    listView2.Items.Add(table.Name);
+                }
             }
 
-            foreach (var table in NameTable)
+            else
             {
-                var name = table.Name;
-                listView2.Items.Add(name);
+                listView1.Items.Clear();
+
+                foreach (var doc in DocumentSample)
+                {
+                    listView1.Items.Add(doc.Name);
+                }
             }
+            resizeAll();
         }
 
-        public void refreshDataGrid()
+        public void dataGridRefresh()
         {
             dataGridView1.Columns.Clear();
             dataGridView1.Refresh();
+            resizeAll();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            listViewRefresh();
-        }
+            textBox1.Text = textFind;
+            textBox2.Text = textFind;
 
-        private void textBox1_MouseEnter(object sender, EventArgs e)
-        {
-            findTextEnter();
-        }
+            textBox1.ForeColor = Color.Silver;
+            textBox2.ForeColor = Color.Silver;
 
-        private void textBox1_MouseLeave(object sender, EventArgs e)
-        {
-            findTextLeave();
-        }
-
-        private void textBox2_MouseEnter(object sender, EventArgs e)
-        {
-            findTextEnter();
-        }
-
-        private void textBox2_MouseLeave(object sender, EventArgs e)
-        {
-            findTextLeave();
-        }
-
-        private void findTextEnter()
-        {
-            if (textBox1.Text == "Поиск" && textBox2.Text == "Поиск")
-            {
-                textBox1.ForeColor = Color.Black;
-                textBox2.ForeColor = Color.Black;
-
-                textBox1.Text = "";
-                textBox2.Text = "";
-            }
-        }
-
-        private void findTextLeave()
-        {
-            if (textBox1.Text == "" && textBox2.Text == "")
-            {
-                textBox1.ForeColor = Color.Silver;
-                textBox2.ForeColor = Color.Silver;
-
-                textBox1.Text = "Поиск";
-                textBox2.Text = "Поиск";
-            }
+            listViewRefresh(true);
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listView1.FocusedItem != null && listView2.FocusedItem != null)
-                dataGridView1.DataSource = grid.loadDataGrid(listView1.FocusedItem.Text, listView2.FocusedItem.Text);
+            dataGridRefresh();
+            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
+            if (listView1.FocusedItem != null)
+            {
+                if (listView2.FocusedItem != null)
+                    dataGridView1.DataSource = grid.loadDataGridSampleAndParameter();
+                else dataGridView1.DataSource = grid.loadDataGridSample();
+            }
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+        }
+
+        private void listView2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            dataGridRefresh();
+            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
+            if (listView2.FocusedItem != null)
+                if (listView1.FocusedItem != null)
+                    dataGridView1.DataSource = grid.loadDataGridSampleAndParameter();
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
+            if (listView1.FocusedItem == null)
+                grid.saveChangedDataGridParameter();
+        }
+
+        private void listView2_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            dataGridRefresh();
+            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
+            listViewRefresh(false);
+            dataGridView1.DataSource = grid.loadDataGridParameter();
+            dataGridView1.AllowUserToAddRows = true;
+            dataGridView1.AllowUserToDeleteRows = true;
+        }
+
+        private void Form1_SizeChanged(object sender, EventArgs e)
+        {
+            resizeAll();
+        }
+
+        private void resizeAll()
+        {
+            listView1.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+            listView2.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

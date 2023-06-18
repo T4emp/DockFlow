@@ -42,26 +42,28 @@
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
-            tabControl1 = new TabControl();
-            tabPage1 = new TabPage();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            panel1 = new Panel();
+            listView2 = new ListView();
+            columnHeader2 = new ColumnHeader();
+            textBox2 = new TextBox();
+            panel2 = new Panel();
             listView1 = new ListView();
             columnHeader1 = new ColumnHeader();
             textBox1 = new TextBox();
-            tabPage2 = new TabPage();
-            listView2 = new ListView();
-            columnHeader3 = new ColumnHeader();
-            textBox2 = new TextBox();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
+            helpToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
-            tabPage2.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { templateToolStripMenuItem, tableToolStripMenuItem, documentToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { templateToolStripMenuItem, tableToolStripMenuItem, documentToolStripMenuItem, aboutToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(910, 24);
@@ -134,7 +136,7 @@
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(133, 22);
+            saveAsToolStripMenuItem.Size = new Size(180, 22);
             saveAsToolStripMenuItem.Text = "Сохранить";
             saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
@@ -144,7 +146,7 @@
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
             tableLayoutPanel1.Controls.Add(dataGridView1, 1, 0);
-            tableLayoutPanel1.Controls.Add(tabControl1, 0, 0);
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 0, 0);
             tableLayoutPanel1.Dock = DockStyle.Fill;
             tableLayoutPanel1.Location = new Point(0, 24);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -164,95 +166,106 @@
             dataGridView1.TabIndex = 0;
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             // 
-            // tabControl1
+            // tableLayoutPanel2
             // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Dock = DockStyle.Fill;
-            tabControl1.Location = new Point(3, 3);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(358, 542);
-            tabControl1.TabIndex = 1;
+            tableLayoutPanel2.ColumnCount = 1;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel2.Controls.Add(panel1, 0, 1);
+            tableLayoutPanel2.Controls.Add(panel2, 0, 0);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(3, 3);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 2;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Size = new Size(358, 542);
+            tableLayoutPanel2.TabIndex = 1;
             // 
-            // tabPage1
+            // panel1
             // 
-            tabPage1.Controls.Add(listView1);
-            tabPage1.Controls.Add(textBox1);
-            tabPage1.Location = new Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(350, 514);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "Шаблоны";
-            tabPage1.UseVisualStyleBackColor = true;
+            panel1.Controls.Add(listView2);
+            panel1.Controls.Add(textBox2);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(3, 274);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(352, 265);
+            panel1.TabIndex = 3;
+            // 
+            // listView2
+            // 
+            listView2.Columns.AddRange(new ColumnHeader[] { columnHeader2 });
+            listView2.Dock = DockStyle.Fill;
+            listView2.Location = new Point(0, 23);
+            listView2.MultiSelect = false;
+            listView2.Name = "listView2";
+            listView2.Size = new Size(352, 242);
+            listView2.TabIndex = 1;
+            listView2.UseCompatibleStateImageBehavior = false;
+            listView2.View = View.Details;
+            listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
+            listView2.MouseDoubleClick += listView2_MouseDoubleClick;
+            // 
+            // columnHeader2
+            // 
+            columnHeader2.Text = "Таблицы с данными";
+            // 
+            // textBox2
+            // 
+            textBox2.Dock = DockStyle.Top;
+            textBox2.Location = new Point(0, 0);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(352, 23);
+            textBox2.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(listView1);
+            panel2.Controls.Add(textBox1);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(352, 265);
+            panel2.TabIndex = 4;
             // 
             // listView1
             // 
             listView1.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
             listView1.Dock = DockStyle.Fill;
-            listView1.Location = new Point(3, 26);
+            listView1.Location = new Point(0, 23);
             listView1.MultiSelect = false;
             listView1.Name = "listView1";
-            listView1.Size = new Size(344, 485);
-            listView1.TabIndex = 1;
+            listView1.Size = new Size(352, 242);
+            listView1.TabIndex = 3;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
             listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
             // 
             // columnHeader1
             // 
-            columnHeader1.Text = "Название";
-            columnHeader1.Width = 250;
+            columnHeader1.Text = "Шаблоны";
             // 
             // textBox1
             // 
             textBox1.Dock = DockStyle.Top;
-            textBox1.Location = new Point(3, 3);
+            textBox1.Location = new Point(0, 0);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(344, 23);
-            textBox1.TabIndex = 0;
-            textBox1.MouseEnter += textBox1_MouseEnter;
-            textBox1.MouseLeave += textBox1_MouseLeave;
+            textBox1.Size = new Size(352, 23);
+            textBox1.TabIndex = 2;
             // 
-            // tabPage2
+            // aboutToolStripMenuItem
             // 
-            tabPage2.Controls.Add(listView2);
-            tabPage2.Controls.Add(textBox2);
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(350, 514);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "Таблицы с данными";
-            tabPage2.UseVisualStyleBackColor = true;
+            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { helpToolStripMenuItem });
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(94, 20);
+            aboutToolStripMenuItem.Text = "О программе";
             // 
-            // listView2
+            // helpToolStripMenuItem
             // 
-            listView2.Columns.AddRange(new ColumnHeader[] { columnHeader3 });
-            listView2.Dock = DockStyle.Fill;
-            listView2.Location = new Point(3, 26);
-            listView2.MultiSelect = false;
-            listView2.Name = "listView2";
-            listView2.Size = new Size(344, 485);
-            listView2.TabIndex = 1;
-            listView2.UseCompatibleStateImageBehavior = false;
-            listView2.View = View.Details;
-            // 
-            // columnHeader3
-            // 
-            columnHeader3.Text = "Название";
-            columnHeader3.Width = 250;
-            // 
-            // textBox2
-            // 
-            textBox2.Dock = DockStyle.Top;
-            textBox2.Location = new Point(3, 3);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(344, 23);
-            textBox2.TabIndex = 0;
-            textBox2.MouseEnter += textBox2_MouseEnter;
-            textBox2.MouseLeave += textBox2_MouseLeave;
+            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            helpToolStripMenuItem.Size = new Size(180, 22);
+            helpToolStripMenuItem.Text = "Инструкция";
+            helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -266,15 +279,16 @@
             Name = "Form1";
             Text = "DockFlow";
             Load += Form1_Load;
+            SizeChanged += Form1_SizeChanged;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            tabPage1.PerformLayout();
-            tabPage2.ResumeLayout(false);
-            tabPage2.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -290,18 +304,19 @@
         private ToolStripMenuItem editTableNameToolStripMenuItem;
         private ToolStripMenuItem deleteTableToolStripMenuItem;
         private TableLayoutPanel tableLayoutPanel1;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
-        private TextBox textBox1;
-        private TextBox textBox2;
         private ToolStripMenuItem documentToolStripMenuItem;
         private ToolStripMenuItem saveAsToolStripMenuItem;
+        private TableLayoutPanel tableLayoutPanel2;
+        private TextBox textBox2;
+        private Panel panel1;
+        private Panel panel2;
+        private ListView listView2;
+        private ListView listView1;
+        private TextBox textBox1;
+        private DataGridView dataGridView1;
         private ColumnHeader columnHeader2;
-        public DataGridView dataGridView1;
         private ColumnHeader columnHeader1;
-        private ColumnHeader columnHeader3;
-        public ListView listView1;
-        public ListView listView2;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripMenuItem helpToolStripMenuItem;
     }
 }

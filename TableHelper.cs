@@ -4,9 +4,7 @@ namespace DockFlow
 {
     public class TableHelper
     {
-        public Form1 form;
-
-        public void AddTable()
+        public void addTable()
         {
             var db = new ApplicationContext();
             var nameTable = new NameTable();
@@ -37,7 +35,7 @@ namespace DockFlow
             while (nameTable.Name != "");
         }
 
-        public void EditTableName(string item)
+        public void editTableName(string item)
         {
             var db = new ApplicationContext();
 
@@ -54,8 +52,6 @@ namespace DockFlow
                     currentTableName.Name = newName;
                     db.Update(currentTableName);
                     db.SaveChanges();
-
-                    form.refreshDataGrid();
                 }
             }
             else
@@ -64,7 +60,7 @@ namespace DockFlow
             }
         }
 
-        public void DeleteTable(string item)
+        public void deleteTable(string item)
         {
             var db = new ApplicationContext();
 
@@ -80,8 +76,6 @@ namespace DockFlow
                 {
                     db.NameTable.RemoveRange(currentTableName);
                     db.SaveChanges();
-
-                    form.refreshDataGrid();
                 }
             }
             else

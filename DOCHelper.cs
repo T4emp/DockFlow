@@ -7,9 +7,15 @@ namespace DockFlow
     {
         public const string Symbol1 = "<";
         public const string Symbol2 = ">";
-        public Form1 form;
 
-        public void FileDialogDOC()
+        public DataGridView DataGridView;
+
+        public DOCHelper(DataGridView dataGridView)
+        {
+            DataGridView = dataGridView;
+        }
+
+        public void fileDialogDOC()
         {
             using (var file = new OpenFileDialog())
             {
@@ -23,7 +29,7 @@ namespace DockFlow
                     try
                     {
                         readText = File.ReadAllBytes(file.FileName);
-                        AddDOC(file.SafeFileName, readText);
+                        addDOC(file.SafeFileName, readText);
                     }
                     catch (Exception)
                     {
@@ -33,7 +39,7 @@ namespace DockFlow
             }
         }
 
-        public void AddDOC(string name, byte[] file)
+        public void addDOC(string name, byte[] file)
         {
             var db = new ApplicationContext();
             var sample = new DocumentSample();
@@ -53,7 +59,7 @@ namespace DockFlow
                     {
                         var txt = DOC.Text;
                         var textSpace = txt.Replace($"{Symbol1}", $" {Symbol1}").Replace($"{Symbol2}", $"{Symbol2} ");
-                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith($"{Symbol1}") && x.EndsWith($"{Symbol2}"));
+                        var parameterList = textSpace.Split(" ").Where(x => x.StartsWith($"{Symbol1}") && x.EndsWith($"{Symbol2}")).Distinct();
 
                         if (parameterList != null && parameterList.Any())
                         {
@@ -74,7 +80,7 @@ namespace DockFlow
             }
         }
 
-        public void ExportDOC(string item)
+        public void exportDOC(string item)
         {
             var db = new ApplicationContext();
             var currentFile = db.DocumentSample.First(x => x.Name == item);
@@ -94,7 +100,7 @@ namespace DockFlow
             }
         }
 
-        public void DeleteDOC(string item)
+        public void deleteDOC(string item)
         {
             var db = new ApplicationContext();
 
@@ -110,7 +116,6 @@ namespace DockFlow
                 {
                     db.DocumentSample.RemoveRange(documentSample);
                     db.SaveChanges();
-                    form.refreshDataGrid();
                 }
             }
             else
@@ -120,12 +125,13 @@ namespace DockFlow
         }
 
         [Obsolete]
-        public void ReplaceAndSaveDOC(int idDOC, int idParameter)
+        public void replaceAndSaveDOC(string doc, string table)
         {
             var db = new ApplicationContext();
 
-            var currentDOC = db.DocumentSample.First(x => x.Id == idDOC);
-            var parameters = db.Parameter.ToList().Where(x => x.NameTableId == idParameter);
+            var currentDOC = db.DocumentSample.First(x => x.Name == doc);
+            var currentTable = db.NameTable.First(x => x.Name == table);
+            var parameters = db.Parameter.ToList().Where(x => x.NameTableId == currentTable.Id);
 
             using (FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
             {
@@ -140,7 +146,7 @@ namespace DockFlow
 
                         for (var i = 0; i < templateParameterList.Length; i++)
                         {
-                            parameterValueList.Add(templateParameterList[i], form.dataGridView1.Rows[i].Cells[1].Value!.ToString());
+                            parameterValueList.Add(templateParameterList[i], DataGridView.Rows[i].Cells[1].Value!.ToString());
                         }
 
                         foreach (var parameter in parameterValueList)
