@@ -10,10 +10,12 @@ namespace DockFlow
 
         TableHelper table = new TableHelper();
 
+        private readonly ApplicationContext _context;
+
         public Form1()
         {
             InitializeComponent();
-            var db = new ApplicationContext();
+            _context = new ApplicationContext();
         }
 
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,9 +86,8 @@ namespace DockFlow
 
         private void listViewRefresh(bool list)
         {
-            var db = new ApplicationContext();
-            var DocumentSample = db.DocumentSample.ToList();
-            var NameTable = db.NameTable.ToList();
+            var DocumentSample = _context.DocumentSample.ToList();
+            var NameTable = _context.NameTable.ToList();
 
             if (list == true)
             {
@@ -125,8 +126,8 @@ namespace DockFlow
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            textBox1.Text = textFind;
-            textBox2.Text = textFind;
+            textBox1.PlaceholderText = textFind;
+            textBox2.PlaceholderText = textFind;
 
             textBox1.ForeColor = Color.Silver;
             textBox2.ForeColor = Color.Silver;
@@ -213,6 +214,22 @@ namespace DockFlow
                 dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
                 grid.saveChangedDataGridParameter();
             }
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            var searchText = textBox1.Text;
+
+            var templates = _context.DocumentSample.Where(x => x.Name.Contains(searchText)).ToList();
+
+            listView1.Items.Clear();
+
+            foreach (var doc in templates)
+            {
+                listView1.Items.Add(doc.Name);
+            }
+
+            resizeAll();
         }
     }
 }
