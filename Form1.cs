@@ -220,9 +220,9 @@ namespace DockFlow
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            var searchText = textBox1.Text;
+            var searchText = textBox1.Text.ToLower();
 
-            var templates = _context.DocumentSample.Where(x => EF.Functions.Like(x.Name, $"%{searchText}%")).ToList();
+            var templates = _context.DocumentSample.Where(x => EF.Functions.Like(x.Name.ToLower(), $"%{searchText}%")).ToList();
 
             listView1.Items.Clear();
 
