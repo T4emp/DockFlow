@@ -5,6 +5,7 @@ namespace DockFlow
     public partial class Form1 : Form
     {
         public const string textFind = "Поиск";
+        public bool checkView = false;
 
         TableHelper table = new TableHelper();
 
@@ -148,6 +149,7 @@ namespace DockFlow
 
         private void listView2_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkView = false;
             dataGridRefresh();
             dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
             if (listView2.FocusedItem != null)
@@ -166,6 +168,8 @@ namespace DockFlow
 
         private void listView2_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            checkView = false;
+            checkView = true;
             dataGridRefresh();
             dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
             listViewRefresh(false);
@@ -198,9 +202,11 @@ namespace DockFlow
 
         private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
-            if (listView1.FocusedItem == null)
+            if (checkView == true)
+            {
+                dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
                 grid.saveChangedDataGridParameter();
+            }
         }
     }
 }
