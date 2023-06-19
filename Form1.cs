@@ -1,4 +1,6 @@
 using DockFlow.Properties;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.Devices;
 using System.Diagnostics;
 
 namespace DockFlow
@@ -220,7 +222,7 @@ namespace DockFlow
         {
             var searchText = textBox1.Text;
 
-            var templates = _context.DocumentSample.Where(x => x.Name.Contains(searchText)).ToList();
+            var templates = _context.DocumentSample.Where(x => EF.Functions.Like(x.Name, $"%{searchText}%")).ToList();
 
             listView1.Items.Clear();
 
