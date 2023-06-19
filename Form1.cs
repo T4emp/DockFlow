@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace DockFlow
 {
     public partial class Form1 : Form
@@ -186,7 +188,19 @@ namespace DockFlow
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(@"DockFlow.pdf")
+            {
+                UseShellExecute = true
+            };
+            p.Start();
+        }
 
+        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            dataGrid grid = new dataGrid(dataGridView1, listView1, listView2);
+            if (listView1.FocusedItem == null)
+                grid.saveChangedDataGridParameter();
         }
     }
 }

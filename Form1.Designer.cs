@@ -40,6 +40,8 @@
             deleteTableToolStripMenuItem = new ToolStripMenuItem();
             documentToolStripMenuItem = new ToolStripMenuItem();
             saveAsToolStripMenuItem = new ToolStripMenuItem();
+            aboutToolStripMenuItem = new ToolStripMenuItem();
+            helpToolStripMenuItem = new ToolStripMenuItem();
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             tableLayoutPanel2 = new TableLayoutPanel();
@@ -51,8 +53,6 @@
             listView1 = new ListView();
             columnHeader1 = new ColumnHeader();
             textBox1 = new TextBox();
-            aboutToolStripMenuItem = new ToolStripMenuItem();
-            helpToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
@@ -136,9 +136,23 @@
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(180, 22);
+            saveAsToolStripMenuItem.Size = new Size(133, 22);
             saveAsToolStripMenuItem.Text = "Сохранить";
             saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
+            // 
+            // aboutToolStripMenuItem
+            // 
+            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { helpToolStripMenuItem });
+            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            aboutToolStripMenuItem.Size = new Size(94, 20);
+            aboutToolStripMenuItem.Text = "О программе";
+            // 
+            // helpToolStripMenuItem
+            // 
+            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            helpToolStripMenuItem.Size = new Size(140, 22);
+            helpToolStripMenuItem.Text = "Инструкция";
+            helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -165,6 +179,7 @@
             dataGridView1.Size = new Size(540, 542);
             dataGridView1.TabIndex = 0;
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            dataGridView1.RowsRemoved += dataGridView1_RowsRemoved;
             // 
             // tableLayoutPanel2
             // 
@@ -252,20 +267,6 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(352, 23);
             textBox1.TabIndex = 2;
-            // 
-            // aboutToolStripMenuItem
-            // 
-            aboutToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { helpToolStripMenuItem });
-            aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(94, 20);
-            aboutToolStripMenuItem.Text = "О программе";
-            // 
-            // helpToolStripMenuItem
-            // 
-            helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            helpToolStripMenuItem.Size = new Size(180, 22);
-            helpToolStripMenuItem.Text = "Инструкция";
-            helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
             // 
             // Form1
             // 
