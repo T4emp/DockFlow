@@ -1,3 +1,4 @@
+using DockFlow.Properties;
 using System.Diagnostics;
 
 namespace DockFlow
@@ -192,12 +193,17 @@ namespace DockFlow
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var p = new Process();
-            p.StartInfo = new ProcessStartInfo(@"DockFlow.pdf")
+            using (FileStream fs = new FileStream("DockFlow.pdf", FileMode.Create, FileAccess.ReadWrite))
             {
-                UseShellExecute = true
-            };
-            p.Start();
+                fs.Write(Resources.DockFlow);
+                fs.Close();
+                var p = new Process();
+                p.StartInfo = new ProcessStartInfo(fs.Name)
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+            }
         }
 
         private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
