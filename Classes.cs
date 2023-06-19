@@ -8,10 +8,17 @@ namespace DockFlow
         public DbSet<NameTable> NameTable => Set<NameTable>();
         public DbSet<Parameter> Parameter => Set<Parameter>();
         public ApplicationContext() => Database.EnsureCreated();
-        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.UseCollation("UTF-8");
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=DF_db122.db");
+            optionsBuilder.UseSqlite("Data Source=DF_db12233.db");
         }
     }
 
