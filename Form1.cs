@@ -136,6 +136,7 @@ namespace DockFlow
                 listView2.Items.Add(obj.Name);
             }
 
+            buttonToolStripMenuItem.Visible = false;
             resizeAll();
         }
 
@@ -187,6 +188,7 @@ namespace DockFlow
 
         private void listView2_SelectedIndexChanged(object sender, EventArgs e)
         {
+            buttonToolStripMenuItem.Visible = true;
             list2Selected = false;
             dataGrid();
         }
@@ -260,6 +262,18 @@ namespace DockFlow
         private void objectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             list2Selected = false;
+        }
+
+        private void listView2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == (char)Keys.Delete)
+                deleteObjectToolStripMenuItem_Click(sender, e);
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == (char)Keys.Delete)
+                deleteToolStripMenuItem_Click(sender, e);
         }
     }
 }

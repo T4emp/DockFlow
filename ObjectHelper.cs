@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System.Reflection.Metadata;
+using System.Security.AccessControl;
 using Xceed.Document.NET;
 
 namespace DockFlow
@@ -43,12 +44,12 @@ namespace DockFlow
             var @object = new Object();
             var parameters = new Parameter();
 
-            var obj = db.Object.First(x => x.Name == item);
+            var obj = db.Object.ToList().First(x => x.Name == item);
             var paramObj = db.Parameter.Where(x => x.ObjectId == obj.Id);
 
-            var name = obj.Name + $" - дубликат";
+            var newName = obj.Name + " - " + Guid.NewGuid().ToString().Remove(5);
 
-            @object.Name = name;
+            @object.Name = newName;
 
             db.Add(@object);
             db.SaveChanges();
@@ -56,13 +57,14 @@ namespace DockFlow
             foreach (var parameter in paramObj)
             {
                 parameters.Id = Guid.NewGuid();
-                parameters.ObjectId = db.Object.First(x => x.Name == name).Id;
+                parameters.ObjectId = db.Object.First(x => x.Name == newName).Id;
                 parameters.Name = parameter.Name;
 
                 db.AddRange(parameters);
                 db.SaveChanges();
             }
         }
+
 
         public void editObjectName(string item)
         {

@@ -238,6 +238,7 @@
             listView2.UseCompatibleStateImageBehavior = false;
             listView2.View = View.Details;
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
+            listView2.KeyDown += listView2_KeyDown;
             // 
             // columnHeader2
             // 
@@ -276,6 +277,7 @@
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
             listView1.SelectedIndexChanged += listView1_SelectedIndexChanged;
+            listView1.KeyDown += listView1_KeyDown;
             // 
             // columnHeader1
             // 

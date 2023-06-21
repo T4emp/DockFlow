@@ -159,7 +159,7 @@ namespace DockFlow
                             saveFileDialog.Title = "Сохранить документ:";
                             saveFileDialog.Filter = "Документ | *.doc*";
                             saveFileDialog.FileName = currentDOC.Name;
-                            saveFileDialog.DefaultExt = "docx";
+                            saveFileDialog.DefaultExt = $"{ currentDOC.Name.EndsWith(".doc") }";
 
                             if (saveFileDialog.ShowDialog() == DialogResult.OK)
                             {
