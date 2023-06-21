@@ -5,7 +5,7 @@ namespace DockFlow
     public class ApplicationContext : DbContext
     {
         public DbSet<DocumentSample> DocumentSample => Set<DocumentSample>();
-        public DbSet<NameTable> NameTable => Set<NameTable>();
+        public DbSet<Object> Object => Set<Object>();
         public DbSet<Parameter> Parameter => Set<Parameter>();
         public ApplicationContext() => Database.EnsureCreated();
 
@@ -30,7 +30,7 @@ namespace DockFlow
         public string? ValueParseDoc { get; set; }
     }
 
-    public class NameTable
+    public class Object
     {
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -39,9 +39,9 @@ namespace DockFlow
     public class Parameter
     {
         public Guid Id { get; set; }
-        public int NameTableId { get; set; }
+        public int ObjectId { get; set; }
         public string? Name { get; set; }
         public string? Value { get; set; }
-        public NameTable? NameTable { get; set; }
+        public Object? Object { get; set; }
     }
 }

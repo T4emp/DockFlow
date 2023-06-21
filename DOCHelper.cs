@@ -130,8 +130,8 @@ namespace DockFlow
             var db = new ApplicationContext();
 
             var currentDOC = db.DocumentSample.First(x => x.Name == doc);
-            var currentTable = db.NameTable.First(x => x.Name == table);
-            var parameters = db.Parameter.ToList().Where(x => x.NameTableId == currentTable.Id);
+            var curretObject = db.Object.First(x => x.Name == table);
+            var parameters = db.Parameter.ToList().Where(x => x.ObjectId == curretObject.Id);
 
             using (FileStream fileStream = new FileStream("tempDocs.docx", FileMode.Create, FileAccess.ReadWrite))
             {

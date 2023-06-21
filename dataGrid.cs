@@ -50,8 +50,8 @@ namespace DockFlow
             dataTable.Columns.Add(new DataColumn("Параметр"));
             dataTable.Columns.Add(new DataColumn("Значение параметра"));
 
-            var currentTable = db.NameTable.First(x => x.Name == ListViewTable.FocusedItem.Text);
-            var currentParameters = db.Parameter.Where(x => x.NameTableId == currentTable.Id);
+            var currentObject = db.Object.First(x => x.Name == ListViewTable.FocusedItem.Text);
+            var currentParameters = db.Parameter.Where(x => x.ObjectId == currentObject.Id);
 
             foreach (var item in currentParameters)
             {
@@ -70,8 +70,8 @@ namespace DockFlow
             dataTable.Columns.Add(new DataColumn("Значение параметра"));
 
             var currentSample = db.DocumentSample.First(x => x.Name == ListViewSample.FocusedItem.Text);
-            var currentTable = db.NameTable.First(x => x.Name == ListViewTable.FocusedItem.Text);
-            var currentParameters = db.Parameter.Where(x => x.NameTableId == currentTable.Id).ToList();
+            var currentObject = db.Object.First(x => x.Name == ListViewTable.FocusedItem.Text);
+            var currentParameters = db.Parameter.Where(x => x.ObjectId == currentObject.Id).ToList();
 
             foreach (var item in currentSample.ValueParseDoc.Split(","))
             {
@@ -89,8 +89,8 @@ namespace DockFlow
             var db = new ApplicationContext();
             var parameter = new Parameter();
 
-            var currentNameTable = db.NameTable.First(x => x.Name == ListViewTable.FocusedItem.Text);
-            var parameters = db.Parameter.ToList().Where(x => x.NameTableId == currentNameTable.Id);
+            var currentObject = db.Object.First(x => x.Name == ListViewTable.FocusedItem.Text);
+            var parameters = db.Parameter.ToList().Where(x => x.ObjectId == currentObject.Id);
 
             db.Parameter.RemoveRange(parameters);
 
@@ -100,7 +100,7 @@ namespace DockFlow
                 var cells2 = DataGridView.Rows[i].Cells[1].Value.ToString();
 
                 parameter.Id = Guid.NewGuid();
-                parameter.NameTableId = currentNameTable.Id;
+                parameter.ObjectId = currentObject.Id;
                 parameter.Name = cells1;
                 parameter.Value = cells2;
 

@@ -34,14 +34,15 @@
             addToolStripMenuItem = new ToolStripMenuItem();
             exportToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
-            tableToolStripMenuItem = new ToolStripMenuItem();
-            createTableToolStripMenuItem = new ToolStripMenuItem();
-            editTableNameToolStripMenuItem = new ToolStripMenuItem();
-            deleteTableToolStripMenuItem = new ToolStripMenuItem();
+            objectToolStripMenuItem = new ToolStripMenuItem();
+            createObjectToolStripMenuItem = new ToolStripMenuItem();
+            editObjectNameToolStripMenuItem = new ToolStripMenuItem();
+            deleteObjectToolStripMenuItem = new ToolStripMenuItem();
             documentToolStripMenuItem = new ToolStripMenuItem();
             saveAsToolStripMenuItem = new ToolStripMenuItem();
             aboutToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
+            buttonToolStripMenuItem = new ToolStripMenuItem();
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             tableLayoutPanel2 = new TableLayoutPanel();
@@ -63,7 +64,7 @@
             // 
             // menuStrip1
             // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { templateToolStripMenuItem, tableToolStripMenuItem, documentToolStripMenuItem, aboutToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { templateToolStripMenuItem, objectToolStripMenuItem, documentToolStripMenuItem, aboutToolStripMenuItem, buttonToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(910, 24);
@@ -76,6 +77,7 @@
             templateToolStripMenuItem.Name = "templateToolStripMenuItem";
             templateToolStripMenuItem.Size = new Size(64, 20);
             templateToolStripMenuItem.Text = "Шаблон";
+            templateToolStripMenuItem.Click += templateToolStripMenuItem_Click;
             // 
             // addToolStripMenuItem
             // 
@@ -98,33 +100,34 @@
             deleteToolStripMenuItem.Text = "Удалить";
             deleteToolStripMenuItem.Click += deleteToolStripMenuItem_Click;
             // 
-            // tableToolStripMenuItem
+            // objectToolStripMenuItem
             // 
-            tableToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createTableToolStripMenuItem, editTableNameToolStripMenuItem, deleteTableToolStripMenuItem });
-            tableToolStripMenuItem.Name = "tableToolStripMenuItem";
-            tableToolStripMenuItem.Size = new Size(128, 20);
-            tableToolStripMenuItem.Text = "Таблица с данными";
+            objectToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { createObjectToolStripMenuItem, editObjectNameToolStripMenuItem, deleteObjectToolStripMenuItem });
+            objectToolStripMenuItem.Name = "objectToolStripMenuItem";
+            objectToolStripMenuItem.Size = new Size(68, 20);
+            objectToolStripMenuItem.Text = "Объекты";
+            objectToolStripMenuItem.Click += objectToolStripMenuItem_Click;
             // 
-            // createTableToolStripMenuItem
+            // createObjectToolStripMenuItem
             // 
-            createTableToolStripMenuItem.Name = "createTableToolStripMenuItem";
-            createTableToolStripMenuItem.Size = new Size(153, 22);
-            createTableToolStripMenuItem.Text = "Создать";
-            createTableToolStripMenuItem.Click += createTableToolStripMenuItem_Click;
+            createObjectToolStripMenuItem.Name = "createObjectToolStripMenuItem";
+            createObjectToolStripMenuItem.Size = new Size(180, 22);
+            createObjectToolStripMenuItem.Text = "Создать";
+            createObjectToolStripMenuItem.Click += createObjectToolStripMenuItem_Click;
             // 
-            // editTableNameToolStripMenuItem
+            // editObjectNameToolStripMenuItem
             // 
-            editTableNameToolStripMenuItem.Name = "editTableNameToolStripMenuItem";
-            editTableNameToolStripMenuItem.Size = new Size(153, 22);
-            editTableNameToolStripMenuItem.Text = "Изменить имя";
-            editTableNameToolStripMenuItem.Click += editTableNameToolStripMenuItem_Click;
+            editObjectNameToolStripMenuItem.Name = "editObjectNameToolStripMenuItem";
+            editObjectNameToolStripMenuItem.Size = new Size(180, 22);
+            editObjectNameToolStripMenuItem.Text = "Изменить имя";
+            editObjectNameToolStripMenuItem.Click += editObjectNameToolStripMenuItem_Click;
             // 
-            // deleteTableToolStripMenuItem
+            // deleteObjectToolStripMenuItem
             // 
-            deleteTableToolStripMenuItem.Name = "deleteTableToolStripMenuItem";
-            deleteTableToolStripMenuItem.Size = new Size(153, 22);
-            deleteTableToolStripMenuItem.Text = "Удалить";
-            deleteTableToolStripMenuItem.Click += deleteTableToolStripMenuItem_Click;
+            deleteObjectToolStripMenuItem.Name = "deleteObjectToolStripMenuItem";
+            deleteObjectToolStripMenuItem.Size = new Size(180, 22);
+            deleteObjectToolStripMenuItem.Text = "Удалить";
+            deleteObjectToolStripMenuItem.Click += deleteObjectToolStripMenuItem_Click;
             // 
             // documentToolStripMenuItem
             // 
@@ -153,6 +156,14 @@
             helpToolStripMenuItem.Size = new Size(140, 22);
             helpToolStripMenuItem.Text = "Инструкция";
             helpToolStripMenuItem.Click += helpToolStripMenuItem_Click;
+            // 
+            // buttonToolStripMenuItem
+            // 
+            buttonToolStripMenuItem.Alignment = ToolStripItemAlignment.Right;
+            buttonToolStripMenuItem.Name = "buttonToolStripMenuItem";
+            buttonToolStripMenuItem.Size = new Size(117, 20);
+            buttonToolStripMenuItem.Text = "Изменить данные";
+            buttonToolStripMenuItem.Click += buttonToolStripMenuItem_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -219,19 +230,21 @@
             listView2.UseCompatibleStateImageBehavior = false;
             listView2.View = View.Details;
             listView2.SelectedIndexChanged += listView2_SelectedIndexChanged;
-            listView2.MouseDoubleClick += listView2_MouseDoubleClick;
             // 
             // columnHeader2
             // 
-            columnHeader2.Text = "Таблицы с данными";
+            columnHeader2.Text = "Объекты";
             // 
             // textBox2
             // 
             textBox2.Dock = DockStyle.Top;
+            textBox2.ForeColor = Color.Silver;
             textBox2.Location = new Point(0, 0);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(352, 23);
             textBox2.TabIndex = 0;
+            textBox2.Text = "Поиск";
+            textBox2.TextChanged += textBox2_TextChanged;
             // 
             // panel2
             // 
@@ -263,10 +276,12 @@
             // textBox1
             // 
             textBox1.Dock = DockStyle.Top;
+            textBox1.ForeColor = Color.Silver;
             textBox1.Location = new Point(0, 0);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(352, 23);
             textBox1.TabIndex = 2;
+            textBox1.Text = "Поиск";
             textBox1.TextChanged += textBox1_TextChanged;
             // 
             // Form1
@@ -298,13 +313,13 @@
         #endregion
         private MenuStrip menuStrip1;
         private ToolStripMenuItem templateToolStripMenuItem;
-        private ToolStripMenuItem tableToolStripMenuItem;
+        private ToolStripMenuItem objectToolStripMenuItem;
         private ToolStripMenuItem addToolStripMenuItem;
         private ToolStripMenuItem exportToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem;
-        private ToolStripMenuItem createTableToolStripMenuItem;
-        private ToolStripMenuItem editTableNameToolStripMenuItem;
-        private ToolStripMenuItem deleteTableToolStripMenuItem;
+        private ToolStripMenuItem createObjectToolStripMenuItem;
+        private ToolStripMenuItem editObjectNameToolStripMenuItem;
+        private ToolStripMenuItem deleteObjectToolStripMenuItem;
         private TableLayoutPanel tableLayoutPanel1;
         private ToolStripMenuItem documentToolStripMenuItem;
         private ToolStripMenuItem saveAsToolStripMenuItem;
@@ -320,5 +335,6 @@
         private ColumnHeader columnHeader1;
         private ToolStripMenuItem aboutToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
+        private ToolStripMenuItem buttonToolStripMenuItem;
     }
 }
