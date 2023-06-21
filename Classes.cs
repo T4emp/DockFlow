@@ -12,13 +12,11 @@ namespace DockFlow
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.UseCollation("UTF-8");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=DF_db12233.db");
+            optionsBuilder.UseSqlite("Data Source=DF_db.db");
         }
     }
 

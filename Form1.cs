@@ -61,6 +61,16 @@ namespace DockFlow
             listView();
         }
 
+        private void duplicateObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listView2.FocusedItem != null)
+            {
+                @object.duplicateObject(listView2.FocusedItem.Text);
+                listView();
+            }
+            else MessageBox.Show("Объект не выбран");
+        }
+
         private void editObjectNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listView2.FocusedItem != null)
